@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pydpop"
+version = "0.1.0"
+description = "RFC 9449 DPoP (Demonstrating Proof of Possession) for Python — proof generation and verification"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [{ name = "pydpop contributors" }]
+keywords = ["dpop", "oauth", "rfc9449", "proof-of-possession", "jwt", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["cryptography>=41"]
+
+[project.urls]
+# TODO: replace <owner> with the real GitHub username/org at publish time
+Homepage = "https://github.com/<owner>/pydpop"
+Repository = "https://github.com/<owner>/pydpop"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pydpop"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
