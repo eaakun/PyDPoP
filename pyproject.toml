@@ -22,9 +22,8 @@ classifiers = [
 dependencies = ["cryptography>=41"]
 
 [project.urls]
-# TODO: replace <owner> with the real GitHub username/org at publish time
-Homepage = "https://github.com/<owner>/pydpop"
-Repository = "https://github.com/<owner>/pydpop"
+Homepage = "https://github.com/eaakun/PyPoP"
+Repository = "https://github.com/eaakun/PyPoP"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pydpop"]
