@@ -22,8 +22,8 @@ classifiers = [
 dependencies = ["cryptography>=41"]
 
 [project.urls]
-Homepage = "https://github.com/eaakun/PyPoP"
-Repository = "https://github.com/eaakun/PyPoP"
+Homepage = "https://github.com/eaakun/PyDPoP"
+Repository = "https://github.com/eaakun/PyDPoP"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pydpop"]
