@@ -27,6 +27,10 @@ I maintain pydpop ([github.com/eaakun/PyDPoP](https://github.com/eaakun/PyDPoP),
 
 Every SDK will have a bug eventually. Bearer tokens make every bug a skeleton key. DPoP exists, the spec requires it, and the tooling is finally here.
 
+## Postscript: the same week, a second case
+
+One day after this analysis was written, Splunk published advisory SVD-2026-1004 (CVE-2026-76286, MEDIUM): Splunk MCP Server below 1.2.1 sent the user's Splunk platform authentication token to the URL configured for a custom API tool — if another user controlled that URL, the token was theirs to capture and reuse. Same shape as the SDK flaw: a bearer token, sent where it shouldn't go, fully reusable by whoever grabs it. Two incidents, one week, one missing control.
+
 ---
 
 **Sources**
