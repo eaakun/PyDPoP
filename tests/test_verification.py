@@ -91,7 +91,11 @@ def test_tampered_signature_rejected():
     key = generate_key()
     proof, _, _, sig = _proof_parts(key)
     head, payload, _ = proof.split(".")
-    flipped = sig[:-1] + ("A" if sig[-1] != "A" else "B")
+    # Flip a char in the middle of the segment: the last base64url char only
+    # carries 4 data bits, so flipping it is a ~1/16 no-op (flaky test).
+    i = len(sig) // 2
+    flipped = sig[:i] + ("A" if sig[i] != "A" else "B") + sig[i + 1:]
+    assert flipped != sig
     with pytest.raises(DPoPError, match="bad signature"):
         verify_proof(proof=f"{head}.{payload}.{flipped}", htm=HTM, htu=HTU)
 
