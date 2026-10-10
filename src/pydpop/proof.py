@@ -29,7 +29,7 @@ def _b64u_json(obj: dict) -> str:
 
 def generate_proof(
     *,
-    private_key,
+    private_key: ec.EllipticCurvePrivateKey,
     htm: str,
     htu: str,
     iat: int | None = None,

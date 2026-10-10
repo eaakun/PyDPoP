@@ -110,6 +110,27 @@ def test_malformed_proof_rejected(bad):
         verify_proof(proof=bad, htm=HTM, htu=HTU)
 
 
+def test_non_object_header_rejected_without_crash():
+    # Fuzzer find (2026-10-11): a JSON header that decodes to a non-dict
+    # used to crash with AttributeError instead of a clean DPoPError.
+    bad = f"{b64u_encode(b'42')}.{b64u_encode(b'[]')}.{b64u_encode(bytes(64))}"
+    with pytest.raises(DPoPError, match="malformed"):
+        verify_proof(proof=bad, htm=HTM, htu=HTU)
+
+
+def test_jwk_missing_coordinates_rejected_without_crash():
+    # Fuzzer find (2026-10-11): an embedded JWK without x/y used to crash
+    # with KeyError instead of a clean DPoPError.
+    key = generate_key()
+    proof = generate_proof(private_key=key, htm=HTM, htu=HTU)
+    head_b64, payload_b64, sig_b64 = proof.split(".")
+    header = json.loads(base64.urlsafe_b64decode(head_b64 + "=="))
+    header["jwk"] = {"kty": "EC", "crv": "P-256"}
+    head2 = b64u_encode(json.dumps(header).encode())
+    with pytest.raises(DPoPError):
+        verify_proof(proof=f"{head2}.{payload_b64}.{sig_b64}", htm=HTM, htu=HTU)
+
+
 # --- claim rules ----------------------------------------------------------
 
 def test_future_iat_rejected():

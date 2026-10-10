@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import time
 
@@ -10,7 +11,19 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 
 from .jwk import b64u_decode, b64u_encode, jwk_thumbprint, public_key_from_jwk
-from .proof import normalize_htu
+from .proof import _raw_to_der, normalize_htu
+
+
+def _norm_for_compare(uri: str) -> str:
+    """Compare-form of a URI: no query/fragment (RFC 9449 §4.3) plus
+    case-folded scheme/host (RFC 3986 §6.2.2.1, which §4.3 SHOULD-applies).
+    Used only for comparison — proof contents are untouched."""
+    from urllib.parse import urlsplit, urlunsplit
+
+    parts = urlsplit(uri)
+    return urlunsplit(
+        (parts.scheme.lower(), parts.netloc.lower(), parts.path, "", "")
+    )
 
 
 class DPoPError(Exception):
@@ -60,6 +73,8 @@ def verify_proof(
         signature = b64u_decode(sig_b64)
     except Exception as exc:
         raise DPoPError(f"malformed DPoP JWT: {exc}") from exc
+    if not isinstance(header, dict) or not isinstance(claims, dict):
+        raise DPoPError("malformed DPoP JWT: header/claims must be JSON objects")
 
     # 1. header checks
     if header.get("typ") != "dpop+jwt":
@@ -76,8 +91,6 @@ def verify_proof(
         signing_input = f"{head_b64}.{payload_b64}".encode("ascii")
         if len(signature) != 64:
             raise DPoPError("bad signature length")
-        from .proof import _raw_to_der
-
         public_key.verify(_raw_to_der(signature), signing_input, ec.ECDSA(hashes.SHA256()))
     except DPoPError:
         raise
@@ -87,7 +100,8 @@ def verify_proof(
     # 3. claims checks
     if claims.get("htm") != htm.upper():
         raise DPoPError("htm mismatch")
-    if claims.get("htu") != normalize_htu(htu):
+    claim_htu = claims.get("htu")
+    if not isinstance(claim_htu, str) or _norm_for_compare(claim_htu) != _norm_for_compare(htu):
         raise DPoPError("htu mismatch")
     iat = claims.get("iat")
     if not isinstance(iat, int) or abs(now - iat) > clock_skew:
@@ -103,7 +117,8 @@ def verify_proof(
         raise DPoPError("nonce mismatch")
     if access_token is not None:
         expected_ath = b64u_encode(hashlib.sha256(access_token.encode("utf-8")).digest())
-        if claims.get("ath") != expected_ath:
+        ath = claims.get("ath")
+        if not isinstance(ath, str) or not hmac.compare_digest(ath, expected_ath):
             raise DPoPError("ath mismatch")
 
     return {"jwk": jwk, "jwk_thumbprint": jwk_thumbprint(jwk), "claims": claims}

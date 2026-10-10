@@ -47,6 +47,8 @@ def public_key_from_jwk(jwk: dict):
         raise ValueError("pydpop v0.1 only supports EC P-256 JWKs")
     if "d" in jwk:
         raise ValueError("DPoP proof JWK must not contain private material")
+    if not isinstance(jwk.get("x"), str) or not isinstance(jwk.get("y"), str):
+        raise ValueError("EC JWK must carry string 'x' and 'y' coordinates")
     numbers = ec.EllipticCurvePublicNumbers(
         x=int.from_bytes(b64u_decode(jwk["x"]), "big"),
         y=int.from_bytes(b64u_decode(jwk["y"]), "big"),
