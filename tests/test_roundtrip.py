@@ -52,7 +52,8 @@ def test_tampered_payload_rejected():
     key = generate_key()
     proof = generate_proof(private_key=key, htm=HTM, htu=HTU)
     head, payload, sig = proof.split(".")
-    import base64, json
+    import base64
+    import json
 
     claims = json.loads(base64.urlsafe_b64decode(payload + "=="))
     claims["htm"] = "DELETE"
@@ -103,7 +104,8 @@ def test_wrong_key_rejected():
     # verifier only trusts the embedded JWK; a proof signed by key A but
     # carrying key B's JWK must fail signature verification
     head, payload, _ = proof.split(".")
-    import base64, json
+    import base64
+    import json
 
     evil_jwk = public_jwk(generate_key())
     header = json.loads(base64.urlsafe_b64decode(head + "=="))

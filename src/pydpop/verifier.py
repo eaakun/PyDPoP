@@ -11,7 +11,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 
 from .jwk import b64u_decode, b64u_encode, jwk_thumbprint, public_key_from_jwk
-from .proof import _raw_to_der, normalize_htu
+from .proof import _raw_to_der
 
 
 def _norm_for_compare(uri: str) -> str:
