@@ -31,3 +31,22 @@ a single dependency (`cryptography`); the httpx integration is opt-in.
 Proof-per-request bookkeeping — fresh `jti`, `iat`, nonce caching, the
 `use_dpop_nonce` retry — is where hand-rolled DPoP integrations go wrong.
 `DPoPAuth` owns that dance, so your code never touches a proof directly.
+
+## FastAPI: `DPoPVerifier`
+
+```python
+from fastapi import Depends, FastAPI
+from pydpop.integrations.fastapi import DPoPVerifier
+
+app = FastAPI()
+verify_dpop = DPoPVerifier()  # share one instance: shared replay cache
+
+@app.get("/data")
+def read_data(bound=Depends(verify_dpop)):
+    # bound == {"jwk", "jwk_thumbprint", "claims"}
+    # compare bound["jwk_thumbprint"] to the access token's cnf.jkt
+    ...
+```
+
+Any failure → `401 WWW-Authenticate: DPoP` (fail closed). Requires
+`pip install pydpop[fastapi]`.
