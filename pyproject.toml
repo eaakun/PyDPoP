@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pydpop"
-version = "0.1.0"
+version = "0.1.1"
 description = "RFC 9449 DPoP (Demonstrating Proof of Possession) for Python — proof generation and verification"
 readme = "README.md"
 license = { text = "MIT" }
