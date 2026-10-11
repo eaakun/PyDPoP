@@ -115,7 +115,7 @@ def private_jwk(private_key) -> dict:
             "priv": b64u_encode(composite_private_raw(private_key.ml_seed, private_key.ec_key)),
         }
     numbers = private_key.private_numbers()
-    if not isinstance(numbers.curve, ec.SECP256R1):
+    if not isinstance(numbers.public_numbers.curve, ec.SECP256R1):
         raise ValueError("pydpop only supports P-256 / ES256 for EC keys")
     pub = numbers.public_numbers
     return {
@@ -170,3 +170,28 @@ def composite_key_from_jwk(jwk: dict) -> tuple[str, bytes]:
     if not isinstance(pub, str):
         raise ValueError("AKP JWK must carry a string 'pub'")
     return variant, b64u_decode(pub)
+
+
+def private_key_from_jwk(jwk: dict):
+    """Rebuild a private key from a :func:`private_jwk` dict (client-side key storage).
+
+    Round-trips both EC and composite keys. Keep the input secret.
+    """
+    if jwk.get("kty") == "AKP":
+        variant = jwk.get("alg")
+        if variant not in COMPOSITE_ALGS:
+            raise ValueError(f"unsupported composite alg: {variant!r}")
+        priv = jwk.get("priv")
+        if not isinstance(priv, str):
+            raise ValueError("AKP private JWK must carry a string 'priv'")
+        raw = b64u_decode(priv)
+        if len(raw) != 64:
+            raise ValueError("bad composite private key length")
+        ec_key = ec.derive_private_key(int.from_bytes(raw[32:], "big"), ec.SECP256R1())
+        return CompositeKey(variant, raw[:32], ec_key)
+    if jwk.get("kty") == "EC" and jwk.get("crv") == "P-256":
+        d = jwk.get("d")
+        if not isinstance(d, str):
+            raise ValueError("EC private JWK must carry a string 'd'")
+        return ec.derive_private_key(int.from_bytes(b64u_decode(d), "big"), ec.SECP256R1())
+    raise ValueError(f"unsupported private JWK: kty={jwk.get('kty')!r}")
