@@ -4,6 +4,16 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
 
 ## [Unreleased]
 
+### Added
+
+- `pydpop.integrations.requests.DPoPAuth`: DPoP for `requests`
+  (`pip install pydpop[requests]`) — mirrors the httpx integration.
+- `dpop` CLI (`keygen`/`mint`/`verify`/`thumbprint`) for debugging flows
+  without writing a script.
+- `private_key_from_jwk()` / `private_jwk()`: client-side key persistence
+  round-trip (save to disk, load back).
+- `SECURITY.md`: vulnerability reporting policy.
+
 ## [0.2.1] — 2026-10-11
 
 ### Added
