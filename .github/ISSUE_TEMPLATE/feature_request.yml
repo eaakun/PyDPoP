@@ -1,0 +1,36 @@
+name: Feature request
+description: An integration, algorithm, or API you need.
+title: "[feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: The job to be done — not the API you imagine, the outcome you need.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API (optional)
+      description: Sketch the call you'd like to write.
+      render: python
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Client (proof generation)
+        - Server (verification)
+        - HTTP integration (httpx/requests/…)
+        - Post-quantum / algorithms
+        - Docs / examples
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: idp
+    attributes:
+      label: Identity provider (if interop-related)
+      placeholder: "e.g. Keycloak 26, Auth0, Okta…"
