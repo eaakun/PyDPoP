@@ -1,6 +1,6 @@
 # pydpop
 
-RFC 9449 DPoP (Demonstrating Proof of Possession) for Python — proof generation and verification, in one tiny dependency-light package.
+RFC 9449 DPoP (Demonstrating Proof of Possession) for Python — proof generation and verification, in one tiny dependency-light package. **v0.2 adds post-quantum hybrid proofs (ML-DSA + ES256) — the first PQC-ready Python DPoP library.**
 
 **Why does this exist?** It's 2026 and Python still has no production-ready DPoP library. Authlib's [DPoP issue](https://github.com/lepture/authlib/issues/315) has been open since 2021. Every Python shop rolling OAuth 2.1 / MCP servers with sender-constrained tokens is hand-rolling proofs or skipping DPoP entirely. This fills that gap.
 
@@ -43,7 +43,7 @@ verify_proof(proof=proof, htm="GET", htu="https://api.example.com/data",
 
 **v0.1** — pure RFC 9449: ES256 (P-256) proof generation, full server-side verification (`typ`, `alg`, signature, `htm`/`htu`, `iat` window, `jti` replay cache, `nonce`, `ath` binding), RFC 7638 JWK thumbprints.
 
-**v0.2 (roadmap)** — hybrid post-quantum signatures (ML-DSA-65 + classical), making this the first PQC-ready Python DPoP library. Algorithm agility by configuration, not by rewriting your code.
+**v0.2** — hybrid post-quantum DPoP: `ML-DSA-44-ES256` (default hybrid, proofs fit 8 KB headers) and `ML-DSA-65-ES256` (opt-in), per draft-ietf-jose-pq-composite-sigs + RFC 9964, with `select_alg()` negotiation against the AS's `dpop_signing_alg_values_supported`. See `docs/pqc.md`. Still one dependency (`cryptography`); ES256 behavior unchanged.
 
 ## Verification checklist
 

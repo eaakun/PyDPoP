@@ -1,4 +1,4 @@
-"""Server-side DPoP proof verification (RFC 9449, Section 4.3)."""
+"""Server-side DPoP proof verification (RFC 9449, Section 4.3; PQC in v0.2)."""
 from __future__ import annotations
 
 import hashlib
@@ -10,7 +10,14 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 
-from .jwk import b64u_decode, b64u_encode, jwk_thumbprint, public_key_from_jwk
+from .composite import COMPOSITE_ALGS, composite_verify
+from .jwk import (
+    b64u_decode,
+    b64u_encode,
+    composite_key_from_jwk,
+    jwk_thumbprint,
+    public_key_from_jwk,
+)
 from .proof import _raw_to_der
 
 
@@ -79,19 +86,29 @@ def verify_proof(
     # 1. header checks
     if header.get("typ") != "dpop+jwt":
         raise DPoPError("bad typ header (must be 'dpop+jwt')")
-    if header.get("alg") != "ES256":
-        raise DPoPError(f"unsupported alg: {header.get('alg')!r}")
+    alg = header.get("alg")
+    if alg != "ES256" and alg not in COMPOSITE_ALGS:
+        raise DPoPError(f"unsupported alg: {alg!r}")
     jwk = header.get("jwk")
     if not isinstance(jwk, dict):
         raise DPoPError("missing embedded jwk")
+    if alg in COMPOSITE_ALGS and jwk.get("alg") != alg:
+        raise DPoPError("embedded JWK alg does not match proof alg")
 
     # 2. signature over the ASCII signing input
     try:
-        public_key = public_key_from_jwk(jwk)
         signing_input = f"{head_b64}.{payload_b64}".encode("ascii")
-        if len(signature) != 64:
-            raise DPoPError("bad signature length")
-        public_key.verify(_raw_to_der(signature), signing_input, ec.ECDSA(hashes.SHA256()))
+        if alg in COMPOSITE_ALGS:
+            variant, pub_raw = composite_key_from_jwk(jwk)
+            try:
+                composite_verify(variant, pub_raw, signing_input, signature)
+            except ValueError as exc:
+                raise DPoPError(f"bad composite signature: {exc}") from exc
+        else:
+            public_key = public_key_from_jwk(jwk)
+            if len(signature) != 64:
+                raise DPoPError("bad signature length")
+            public_key.verify(_raw_to_der(signature), signing_input, ec.ECDSA(hashes.SHA256()))
     except DPoPError:
         raise
     except (InvalidSignature, ValueError) as exc:
