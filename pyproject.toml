@@ -21,6 +21,9 @@ classifiers = [
 ]
 dependencies = ["cryptography>=41"]
 
+[project.optional-dependencies]
+httpx = ["httpx>=0.24"]
+
 [project.urls]
 Homepage = "https://github.com/eaakun/PyDPoP"
 Repository = "https://github.com/eaakun/PyDPoP"

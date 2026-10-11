@@ -53,6 +53,8 @@ verify_proof(proof=proof, htm="GET", htu="https://api.example.com/data",
 
 ## FAQ
 
+**I use httpx — do I have to mint proofs manually?** No: `pip install pydpop[httpx]` and use `DPoPAuth` — every request is signed, `DPoP-Nonce` retries are automatic. See `docs/integrations.md`.
+
 **How do I implement DPoP in Python?** Use this library — Authlib has no DPoP support ([issue #315](https://github.com/lepture/authlib/issues/315) open since 2021). `pip install pydpop`, then the Quickstart above.
 
 **Is there a post-quantum DPoP library for Python?** Yes — this one. v0.2 adds hybrid `ML-DSA-44-ES256` / `ML-DSA-65-ES256` proofs (draft-ietf-jose-pq-composite-sigs + RFC 9964), still with a single dependency. See `docs/pqc.md`.
