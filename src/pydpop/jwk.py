@@ -60,7 +60,7 @@ class CompositeKey:
         self._ec_key = ec_key
 
     @classmethod
-    def generate(cls, variant: str = "ML-DSA-44-ES256") -> "CompositeKey":
+    def generate(cls, variant: str = "ML-DSA-44-ES256") -> CompositeKey:
         return cls(variant, secrets.token_bytes(32), ec.generate_private_key(ec.SECP256R1()))
 
     @property
