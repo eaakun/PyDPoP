@@ -6,7 +6,15 @@ Single dependency: ``cryptography``.
 """
 
 from .composite import COMPOSITE_ALGS
-from .jwk import CompositeKey, composite_key_from_jwk, generate_key, jwk_thumbprint, private_jwk, public_jwk
+from .jwk import (
+    CompositeKey,
+    composite_key_from_jwk,
+    generate_key,
+    jwk_thumbprint,
+    private_jwk,
+    private_key_from_jwk,
+    public_jwk,
+)
 from .proof import generate_proof, select_alg
 from .verifier import DPoPError, MemoryJtiStore, verify_proof
 
@@ -20,6 +28,7 @@ __all__ = [
     "generate_proof",
     "jwk_thumbprint",
     "private_jwk",
+    "private_key_from_jwk",
     "public_jwk",
     "select_alg",
     "verify_proof",
