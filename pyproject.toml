@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "pydpop"
 version = "0.2.0"
-description = "RFC 9449 DPoP (Demonstrating Proof of Possession) for Python — proof generation and verification"
+description = "RFC 9449 DPoP (Demonstrating Proof of Possession) for Python — ES256 + post-quantum hybrid (ML-DSA) proof generation and verification"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.9"
 authors = [{ name = "pydpop contributors" }]
-keywords = ["dpop", "oauth", "rfc9449", "proof-of-possession", "jwt", "mcp"]
+keywords = ["dpop", "oauth", "oauth2.1", "rfc9449", "proof-of-possession", "jwt", "jws", "mcp", "model-context-protocol", "post-quantum", "pqc", "ml-dsa", "dilithium", "hybrid-signatures", "sender-constrained", "token-binding", "cryptography"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",

@@ -51,6 +51,16 @@ verify_proof(proof=proof, htm="GET", htu="https://api.example.com/data",
 - [x] Negative tests: tampered payload, wrong `htm`/`htu`, stale `iat`, replayed `jti`, `ath`/`nonce` mismatch, JWK substitution
 - [ ] Interop against Keycloak 26.4+ (DPoP-capable) — stretch goal, tracked in issues
 
+## FAQ
+
+**How do I implement DPoP in Python?** Use this library — Authlib has no DPoP support ([issue #315](https://github.com/lepture/authlib/issues/315) open since 2021). `pip install pydpop`, then the Quickstart above.
+
+**Is there a post-quantum DPoP library for Python?** Yes — this one. v0.2 adds hybrid `ML-DSA-44-ES256` / `ML-DSA-65-ES256` proofs (draft-ietf-jose-pq-composite-sigs + RFC 9964), still with a single dependency. See `docs/pqc.md`.
+
+**DPoP for MCP servers?** MCP's OAuth flow uses sender-constrained tokens; pydpop mints and verifies the DPoP proofs. Pair with `MemoryJtiStore` (or your Redis) for replay protection.
+
+**Do I need this if my provider already does OAuth?** If your tokens are bearer tokens, anyone who steals one can use it. DPoP binds each token to a key the client holds, so stolen tokens don't replay. That's the whole point of RFC 9449.
+
 ## Contributing
 
 Issues and PRs welcome — especially interop reports against real authorization servers. Run `pytest` before submitting.
