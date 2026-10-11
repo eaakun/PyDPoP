@@ -6,6 +6,11 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
 
 ### Added
 
+- `pydpop.integrations.fastapi.DPoPVerifier`: FastAPI-native DPoP verification
+  as a Dependency (`pip install pydpop[fastapi]`) — 401 fail-closed, shared
+  `jti` replay cache, `ath` binding from `Authorization: DPoP`.
+- `docs/atproto.md`: DPoP recipe for ATProto/Bluesky (DPoP is mandatory there;
+  the ecosystem hand-rolls it — this is the drop-in layer).
 - `pydpop.integrations.requests.DPoPAuth`: DPoP for `requests`
   (`pip install pydpop[requests]`) — mirrors the httpx integration.
 - `dpop` CLI (`keygen`/`mint`/`verify`/`thumbprint`) for debugging flows
