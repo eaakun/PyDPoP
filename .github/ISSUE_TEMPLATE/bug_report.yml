@@ -1,0 +1,44 @@
+name: Bug report
+description: Something broken? Tell us how to reproduce it.
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: pydpop version
+      placeholder: "e.g. 0.2.1 (`pip show pydpop`)"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "e.g. 3.12"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The smallest code snippet that shows the problem.
+      placeholder: |
+        from pydpop import generate_key, generate_proof
+        key = generate_key()
+        ...
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect? What happened instead?
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues first
+          required: false
