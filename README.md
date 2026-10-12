@@ -59,6 +59,8 @@ verify_proof(proof=proof, htm="GET", htu="https://api.example.com/data",
 
 **Django?** `pip install pydpop[django]` and add `DPoPMiddleware` — same guarantees, plus `@dpop_exempt` for public views.
 
+**Flask / Starlette?** `pip install pydpop[flask]` (`DPoPVerifier` + `g.dpop`) or `pip install pydpop[starlette]` (ASGI middleware, `scope["dpop"]`). **aiohttp?** `pip install pydpop[aiohttp]` (`DPoPClientSession`, same auto-signing as the httpx one).
+
 **DPoP for Bluesky/ATProto in Python?** ATProto mandates DPoP-bound tokens and the ecosystem hand-rolls it (badly — see the cookbook bugs). `docs/atproto.md` is the recipe; `DPoPAuth` is the drop-in layer.
 
 **How do I implement DPoP in Python?** Use this library — Authlib has no DPoP support ([issue #315](https://github.com/lepture/authlib/issues/315) open since 2021). `pip install pydpop`, then the Quickstart above.
