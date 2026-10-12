@@ -49,7 +49,7 @@ verify_proof(proof=proof, htm="GET", htu="https://api.example.com/data",
 
 - [x] Round-trip: generate → verify
 - [x] Negative tests: tampered payload, wrong `htm`/`htu`, stale `iat`, replayed `jti`, `ath`/`nonce` mismatch, JWK substitution
-- [ ] Interop against Keycloak 26.4+ (DPoP-capable) — stretch goal, tracked in issues
+- [x] Interop against Keycloak 26.4+ (DPoP-capable) — verified against Keycloak 26.8.0, see `docs/interop-keycloak.md`
 
 ## FAQ
 
