@@ -25,6 +25,7 @@ dependencies = ["cryptography>=41"]
 httpx = ["httpx>=0.24"]
 requests = ["requests>=2.28"]
 fastapi = ["fastapi>=0.100"]
+django = ["django>=4.2"]
 
 [project.scripts]
 dpop = "pydpop.cli:main"
