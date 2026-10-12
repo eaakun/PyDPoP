@@ -18,12 +18,54 @@ from typing import Any
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.primitives.asymmetric.mldsa import (
-    MLDSA44PrivateKey,
-    MLDSA44PublicKey,
-    MLDSA65PrivateKey,
-    MLDSA65PublicKey,
-)
+
+try:  # ML-DSA landed in cryptography 47.0; importable but unusable on
+    # 47.x stock wheels (AWS-LC/BoringSSL-only) — see mldsa_available().
+    from cryptography.hazmat.primitives.asymmetric.mldsa import (
+        MLDSA44PrivateKey,
+        MLDSA44PublicKey,
+        MLDSA65PrivateKey,
+        MLDSA65PublicKey,
+    )
+    _MLDSA_IMPORT_OK = True
+except ImportError:
+    _MLDSA_IMPORT_OK = False
+    MLDSA44PrivateKey = MLDSA44PublicKey = None  # type: ignore[assignment]
+    MLDSA65PrivateKey = MLDSA65PublicKey = None  # type: ignore[assignment]
+
+import cryptography as _cryptography
+
+_mldsa_works: bool | None = None
+
+
+def mldsa_available() -> bool:
+    """True only if ML-DSA actually works (importable *and* backed).
+
+    cryptography 47.0 added the ``mldsa`` module but only wired it to
+    AWS-LC/BoringSSL — the stock PyPI wheel (OpenSSL) raises
+    ``UnsupportedAlgorithm`` on every operation until 48.0. Probe once
+    and cache.
+    """
+    global _mldsa_works
+    if _mldsa_works is None:
+        if not _MLDSA_IMPORT_OK:
+            _mldsa_works = False
+        else:
+            try:
+                MLDSA44PrivateKey.generate()
+                _mldsa_works = True
+            except Exception:
+                _mldsa_works = False
+    return _mldsa_works
+
+
+def _require_mldsa() -> None:
+    if not mldsa_available():
+        raise ValueError(
+            "PQC hybrid DPoP (ML-DSA-*) needs cryptography>=48 with a working "
+            f"ML-DSA backend; you have {_cryptography.__version__}. "
+            "pip install -U cryptography, or use ES256."
+        )
 from cryptography.hazmat.primitives.asymmetric.utils import (
     decode_dss_signature,
     encode_dss_signature,
@@ -73,6 +115,7 @@ def message_repr(variant: str, message: bytes) -> bytes:
 
 def composite_public_raw(variant: str, ml_seed: bytes, ec_key: ec.EllipticCurvePrivateKey) -> bytes:
     """Raw composite public key: ML-DSA PK || EC x || EC y."""
+    _require_mldsa()
     cfg = _cfg(variant)
     ml_pk = cfg["ml_priv_cls"].from_seed_bytes(ml_seed).public_key().public_bytes_raw()
     nums = ec_key.public_key().public_numbers()
@@ -86,6 +129,7 @@ def composite_private_raw(ml_seed: bytes, ec_key: ec.EllipticCurvePrivateKey) ->
 
 def composite_sign(variant: str, ml_seed: bytes, ec_key: ec.EllipticCurvePrivateKey, message: bytes) -> bytes:
     """Sign per the draft: both components over M', concatenated."""
+    _require_mldsa()
     cfg = _cfg(variant)
     ml_sk = cfg["ml_priv_cls"].from_seed_bytes(ml_seed)
     mprime = message_repr(variant, message)
@@ -97,6 +141,7 @@ def composite_sign(variant: str, ml_seed: bytes, ec_key: ec.EllipticCurvePrivate
 
 def composite_verify(variant: str, pub_raw: bytes, message: bytes, signature: bytes) -> None:
     """Verify both components; raises on any failure."""
+    _require_mldsa()
     cfg = _cfg(variant)
     if len(pub_raw) != cfg["ml_pk_len"] + _EC_PK_LEN:
         raise ValueError("bad composite public key length")
