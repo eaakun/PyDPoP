@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pydpop"
-version = "0.2.0"
+version = "0.2.1"
 description = "RFC 9449 DPoP (Demonstrating Proof of Possession) for Python — ES256 + post-quantum hybrid (ML-DSA) proof generation and verification"
 readme = "README.md"
 license = { text = "MIT" }
@@ -19,7 +19,11 @@ classifiers = [
     "Topic :: Security :: Cryptography",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["cryptography>=41"]
+dependencies = [
+    # ES256 works on >=41. PQC hybrid (ML-DSA-*) needs >=48 with a working
+    # backend; pydpop degrades gracefully (mldsa_available(), clear errors).
+    "cryptography>=41",
+]
 
 [project.optional-dependencies]
 httpx = ["httpx>=0.24"]
