@@ -57,6 +57,8 @@ verify_proof(proof=proof, htm="GET", htu="https://api.example.com/data",
 
 **I'm building a FastAPI resource server — how do I verify DPoP?** `pip install pydpop[fastapi]` and use `DPoPVerifier` as a Dependency — 401s fail closed, replay cache shared. Same doc.
 
+**Django?** `pip install pydpop[django]` and add `DPoPMiddleware` — same guarantees, plus `@dpop_exempt` for public views.
+
 **DPoP for Bluesky/ATProto in Python?** ATProto mandates DPoP-bound tokens and the ecosystem hand-rolls it (badly — see the cookbook bugs). `docs/atproto.md` is the recipe; `DPoPAuth` is the drop-in layer.
 
 **How do I implement DPoP in Python?** Use this library — Authlib has no DPoP support ([issue #315](https://github.com/lepture/authlib/issues/315) open since 2021). `pip install pydpop`, then the Quickstart above.
