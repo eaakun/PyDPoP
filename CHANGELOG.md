@@ -6,6 +6,9 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
 
 ### Added
 
+- `pydpop.integrations.django.DPoPMiddleware`: Django-native DPoP verification
+  (`pip install pydpop[django]`) — fail-closed 401s, shared `jti` replay cache,
+  `ath` binding, `@dpop_exempt` for public views.
 - `pydpop.integrations.fastapi.DPoPVerifier`: FastAPI-native DPoP verification
   as a Dependency (`pip install pydpop[fastapi]`) — 401 fail-closed, shared
   `jti` replay cache, `ath` binding from `Authorization: DPoP`.
