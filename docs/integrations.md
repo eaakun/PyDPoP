@@ -73,3 +73,48 @@ def health_check(request): ...  # skips verification
 Fail-closed 401s, shared replay cache, `ath` binding — same guarantees as
 the FastAPI verifier, plus `@dpop_exempt` for public views. Requires
 `pip install pydpop[django]`.
+
+## Flask: `DPoPVerifier`
+
+```python
+from flask import Flask, g
+from pydpop.integrations.flask import DPoPVerifier, dpop_exempt
+
+app = Flask(__name__)
+DPoPVerifier(app)  # registers a before-request hook
+
+@app.get("/data")
+def data():
+    return {"jkt": g.dpop["jwk_thumbprint"]}  # compare to cnf.jkt
+```
+
+401s fail closed; `@dpop_exempt` for public views. Requires
+`pip install pydpop[flask]`.
+
+## Starlette: `DPoPMiddleware`
+
+Pure ASGI middleware — works for any Starlette app (and any ASGI framework):
+
+```python
+from starlette.applications import Starlette
+from pydpop.integrations.starlette import DPoPMiddleware
+
+app = Starlette()
+app.add_middleware(DPoPMiddleware)
+# endpoint: scope["dpop"]["jwk_thumbprint"]
+```
+
+Requires `pip install pydpop[starlette]`.
+
+## aiohttp client: `DPoPClientSession`
+
+```python
+from pydpop.integrations.aiohttp import DPoPClientSession
+
+async with DPoPClientSession(key, access_token=tok) as sess:
+    async with sess.get(url) as resp: ...
+```
+
+Fresh proof per request, `DPoP-Nonce` caching, single auto-retry on
+`use_dpop_nonce` — the aiohttp mirror of the httpx integration. Requires
+`pip install pydpop[aiohttp]`.
