@@ -6,6 +6,12 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
 
 ### Added
 
+- `pydpop.integrations.flask.DPoPVerifier`: Flask-native DPoP verification
+  (`pip install pydpop[flask]`) — before-request hook, `g.dpop`, `@dpop_exempt`.
+- `pydpop.integrations.starlette.DPoPMiddleware`: pure-ASGI DPoP middleware
+  (`pip install pydpop[starlette]`) — `scope["dpop"]`, works for any ASGI app.
+- `pydpop.integrations.aiohttp.DPoPClientSession`: async DPoP client
+  (`pip install pydpop[aiohttp]`) — fresh proof per request, nonce auto-retry.
 - `pydpop.integrations.django.DPoPMiddleware`: Django-native DPoP verification
   (`pip install pydpop[django]`) — fail-closed 401s, shared `jti` replay cache,
   `ath` binding, `@dpop_exempt` for public views.
