@@ -61,6 +61,9 @@ class CompositeKey:
 
     @classmethod
     def generate(cls, variant: str = "ML-DSA-44-ES256") -> "CompositeKey":
+        from .composite import _require_mldsa
+
+        _require_mldsa()
         return cls(variant, secrets.token_bytes(32), ec.generate_private_key(ec.SECP256R1()))
 
     @property
