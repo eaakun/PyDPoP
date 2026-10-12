@@ -50,3 +50,26 @@ def read_data(bound=Depends(verify_dpop)):
 
 Any failure → `401 WWW-Authenticate: DPoP` (fail closed). Requires
 `pip install pydpop[fastapi]`.
+
+## Django: `DPoPMiddleware`
+
+```python
+# settings.py
+MIDDLEWARE = [
+    ...,
+    "pydpop.integrations.django.DPoPMiddleware",
+]
+
+# views.py
+def my_view(request):
+    # request.dpop == {"jwk", "jwk_thumbprint", "claims"}
+    # compare request.dpop["jwk_thumbprint"] to the token's cnf.jkt
+    ...
+
+@dpop_exempt
+def health_check(request): ...  # skips verification
+```
+
+Fail-closed 401s, shared replay cache, `ath` binding — same guarantees as
+the FastAPI verifier, plus `@dpop_exempt` for public views. Requires
+`pip install pydpop[django]`.
