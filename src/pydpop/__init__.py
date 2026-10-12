@@ -5,7 +5,7 @@ v0.2: ES256 plus PQ/T hybrid composite proofs (``ML-DSA-44-ES256``,
 Single dependency: ``cryptography``.
 """
 
-from .composite import COMPOSITE_ALGS
+from .composite import COMPOSITE_ALGS, mldsa_available
 from .jwk import (
     CompositeKey,
     composite_key_from_jwk,
@@ -27,6 +27,7 @@ __all__ = [
     "generate_key",
     "generate_proof",
     "jwk_thumbprint",
+    "mldsa_available",
     "private_jwk",
     "private_key_from_jwk",
     "public_jwk",
