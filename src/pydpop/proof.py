@@ -93,10 +93,10 @@ def select_alg(server_metadata: dict, *, prefer_pqc: bool = True, require_pqc: b
     """
     from .verifier import DPoPError
 
-    from .composite import COMPOSITE_ALGS
+    from .composite import COMPOSITE_ALGS, mldsa_available
 
     advertised = server_metadata.get("dpop_signing_alg_values_supported") or ["ES256"]
-    if prefer_pqc:
+    if prefer_pqc and mldsa_available():
         for alg in COMPOSITE_ALGS:
             if alg in advertised:
                 return alg
