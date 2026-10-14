@@ -2,10 +2,10 @@
 import pytest
 
 flask = pytest.importorskip("flask")
-from flask import Flask, g, jsonify  # noqa: E402
+from flask import Flask, g, jsonify
 
-from pydpop import generate_key, generate_proof  # noqa: E402
-from pydpop.integrations.flask import DPoPVerifier, dpop_exempt  # noqa: E402
+from pydpop import generate_key, generate_proof
+from pydpop.integrations.flask import DPoPVerifier, dpop_exempt
 
 
 @pytest.fixture()
