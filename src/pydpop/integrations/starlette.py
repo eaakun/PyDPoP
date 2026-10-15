@@ -19,7 +19,7 @@ Requires the ``starlette`` extra: ``pip install pydpop[starlette]``.
 """
 from __future__ import annotations
 
-from typing import Awaitable, Callable, Optional
+from typing import Optional
 
 try:
     from starlette.responses import JSONResponse
