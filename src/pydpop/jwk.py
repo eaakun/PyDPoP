@@ -60,7 +60,7 @@ class CompositeKey:
         self._ec_key = ec_key
 
     @classmethod
-    def generate(cls, variant: str = "ML-DSA-44-ES256") -> "CompositeKey":
+    def generate(cls, variant: str = "ML-DSA-44-ES256") -> CompositeKey:
         from .composite import _require_mldsa
 
         _require_mldsa()

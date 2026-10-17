@@ -18,7 +18,8 @@ Requires the ``httpx`` extra: ``pip install pydpop[httpx]``.
 """
 from __future__ import annotations
 
-from typing import Iterator, Optional
+from collections.abc import Iterator
+from typing import Optional
 
 try:
     import httpx
