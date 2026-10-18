@@ -4,6 +4,15 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
 
 ## [Unreleased]
 
+### Changed
+
+- Composite signatures now follow draft-ietf-jose-pq-composite-sigs-05 §4.2
+  component encodings: ECDSA half is DER `Ecdsa-Sig-Value` (non-canonical DER
+  rejected at verify), public key is X9.62 uncompressed `0x04||x||y` (65 B),
+  private key is RFC 5915 DER `ECPrivateKey`. `M′` construction, labels and
+  component order are unchanged. Composite proofs grow by ~11 base64 chars;
+  the 8 KB header conclusion for `ML-DSA-44-ES256` is unaffected.
+
 ### Added
 
 - `pydpop.integrations.flask.DPoPVerifier`: Flask-native DPoP verification

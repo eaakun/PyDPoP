@@ -12,10 +12,12 @@ breaking changes to existing callers.
 | `ML-DSA-44-ES256` | ~6.0 KB | **recommended hybrid**: fits the common 8 KB HTTP header cap |
 | `ML-DSA-65-ES256` | ~8.3 KB | opt-in; needs raised header limits on your servers |
 
-Both hybrids follow draft-ietf-jose-pq-composite-sigs (WG, v03) exactly —
+Both hybrids follow draft-ietf-jose-pq-composite-sigs (WG, v05) exactly —
 domain-separated `M' = Prefix || Label || 0x00 || PH(M)`, ML-DSA signed with
-`ctx=Label` — and use RFC 9964 `AKP` JWKs. Verification requires *both*
-component signatures to pass.
+`ctx=Label` — and use RFC 9964 `AKP` JWKs. Component encodings per -05 §4.2:
+DER `Ecdsa-Sig-Value` (non-canonical DER rejected), X9.62 uncompressed
+`0x04||x||y` public key (65 bytes), RFC 5915 DER `ECPrivateKey` private key.
+Verification requires *both* component signatures to pass.
 
 ## Usage
 
@@ -46,10 +48,12 @@ Notes:
 ## Standards tracking
 
 - RFC 9964 (ML-DSA in JOSE/COSE, May 2026) — implemented, stable.
-- draft-ietf-jose-pq-composite-sigs-03 — implemented; the draft is still WG
+- draft-ietf-jose-pq-composite-sigs-05 — implemented; the draft is still WG
   work-in-progress, so pydpop pins the revision it was built against and
   re-checks on every update. Wire-format changes upstream will be tracked
-  as patch releases.
+  as patch releases. (Upgraded from -03: -05 §4.2 changed the ECDSA
+  component encodings to DER `Ecdsa-Sig-Value`, X9.62 uncompressed public
+  key, and RFC 5915 DER `ECPrivateKey`.)
 
 ## Interop
 

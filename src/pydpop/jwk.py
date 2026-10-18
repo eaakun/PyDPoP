@@ -15,9 +15,12 @@ import secrets
 from cryptography.hazmat.primitives.asymmetric import ec
 
 from .composite import (
+    _EC_DER_PRIV_LEN,
+    _SEED_LEN,
     COMPOSITE_ALGS,
     composite_private_raw,
     composite_public_raw,
+    ec_priv_from_der,
 )
 
 
@@ -60,7 +63,7 @@ class CompositeKey:
         self._ec_key = ec_key
 
     @classmethod
-    def generate(cls, variant: str = "ML-DSA-44-ES256") -> "CompositeKey":
+    def generate(cls, variant: str = "ML-DSA-44-ES256") -> CompositeKey:
         from .composite import _require_mldsa
 
         _require_mldsa()
@@ -188,10 +191,10 @@ def private_key_from_jwk(jwk: dict):
         if not isinstance(priv, str):
             raise ValueError("AKP private JWK must carry a string 'priv'")
         raw = b64u_decode(priv)
-        if len(raw) != 64:
+        if len(raw) != _SEED_LEN + _EC_DER_PRIV_LEN:
             raise ValueError("bad composite private key length")
-        ec_key = ec.derive_private_key(int.from_bytes(raw[32:], "big"), ec.SECP256R1())
-        return CompositeKey(variant, raw[:32], ec_key)
+        ec_key = ec_priv_from_der(raw[_SEED_LEN:])
+        return CompositeKey(variant, raw[:_SEED_LEN], ec_key)
     if jwk.get("kty") == "EC" and jwk.get("crv") == "P-256":
         d = jwk.get("d")
         if not isinstance(d, str):
