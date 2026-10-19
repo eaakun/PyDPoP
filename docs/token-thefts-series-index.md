@@ -1,4 +1,4 @@
-# Eleven Token Thefts, One Missing Control — series index
+# Twelve Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -46,12 +46,20 @@ next theft a non-event.
     takeover (MEDIUM 4.4, CWE-863); the sibling CVE-2026-19600 (authentication tokens
     written into server logs) was the ready-made theft channel — the purest
     stolen-bearer-replay shape of the series.
-11. [Eleven Token Thefts, One Missing Control](vikunja-websocket-revocation-bypass-dpop-analysis.md)
+11. [Vikunja's WebSocket Revocation Bypass](vikunja-websocket-revocation-bypass-dpop-analysis.md)
     — CVE-2026-111917: Vikunja's WebSocket `handleAuth` never checks the JWT `sid`
     against the sessions table, so a stolen access token keeps the victim's
     `notification.created` pushes flowing in real time after session deletion or
     TOTP enrollment — revocation simply never reaches the endpoint (MEDIUM 6.5,
     CWE-613, fixed in 2.7.0).
+
+
+12. [Twelve Token Thefts, One Missing Control](vanus-default-admin-token-dpop-analysis.md)
+    — CVE-2026-111998: Vanus 0.8.0–0.9.0 ships a hardcoded default admin Bearer <redacted>;
+    unauthenticated remote attackers replay the public string to the gateway gRPC
+    proxy port for cluster-admin (CRITICAL 9.3/9.8, CWE-1392). The purest specimen
+    of the series thesis — no theft needed, the token is public source; DPoP-bound
+    issuance neutralizes the entire replay class.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
