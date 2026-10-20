@@ -1,4 +1,4 @@
-# Twelve Token Thefts, One Missing Control — series index
+# Thirteen Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -60,6 +60,13 @@ next theft a non-event.
     proxy port for cluster-admin (CRITICAL 9.3/9.8, CWE-1392). The purest specimen
     of the series thesis — no theft needed, the token is public source; DPoP-bound
     issuance neutralizes the entire replay class.
+
+13. [Thirteen Token Thefts, One Missing Control](camel-http-redirect-credential-disclosure-dpop-analysis.md)
+    — CVE-2026-85251: Apache Camel `camel-http` re-attached `Authorization: Bearer`
+    to every redirect target and registered basic/digest credentials against an
+    any-host `AuthScope` (HIGH 7.5, `followRedirects=true`, fixed in 4.18.5 / 4.22.1 /
+    4.23.0) — one `Location:` header is all a remote endpoint needs to harvest
+    your tokens.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
