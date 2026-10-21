@@ -1,4 +1,4 @@
-# Thirteen Token Thefts, One Missing Control — series index
+# Fourteen Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -67,6 +67,14 @@ next theft a non-event.
     any-host `AuthScope` (HIGH 7.5, `followRedirects=true`, fixed in 4.18.5 / 4.22.1 /
     4.23.0) — one `Location:` header is all a remote endpoint needs to harvest
     your tokens.
+
+14. [Fourteen Token Thefts, One Missing Control](cloud-shell-cswh-oauth-exfiltration-dpop-analysis.md)
+    — CVE-2026-85267: Google Cloud Shell Cross-Site WebSocket Hijacking — an
+    unauthenticated attacker could hijack an active session and exfiltrate the
+    user’s OAuth access token from a cross-origin WebSocket (no CVSS; patched
+    2026-07-22, NVD-published 2026-10-20). Retrospective write-up, not a live
+    fire — but the highest-profile bearer-string casualty so far: exfiltrating
+    the string would no longer exfiltrate access under DPoP.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
