@@ -76,6 +76,15 @@ next theft a non-event.
     fire — but the highest-profile bearer-string casualty so far: exfiltrating
     the string would no longer exfiltrate access under DPoP.
 
+15. [Fifteen Token Thefts, One Missing Control](litellm-supply-chain-stolen-github-tokens-dpop-analysis.md)
+    — 2026-10-21: attackers published a malicious `litellm==1.107.0` (PyPI +
+    Docker, ~23M weekly downloads) using stolen GitHub CLI OAuth tokens from
+    three engineers' accounts; a credential stealer ("privcollect") plus a
+    backdoor rode the poisoned `latest` tag for ~2 hours. The string was the
+    identity: bearer-token replay turned stolen CLI tokens into
+    release-pipeline authority — DPoP-bound tokens would have been inert in
+    the attacker's hands.
+
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
 [pydpop](https://github.com/eaakun/PyDPoP) (`pip install pydpop`) — pure-RFC 9449 DPoP
