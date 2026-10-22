@@ -2,7 +2,7 @@
 import pytest
 
 django = pytest.importorskip("django")
-from django.conf import settings  # noqa: E402
+from django.conf import settings
 
 if not settings.configured:
     settings.configure(
@@ -14,12 +14,12 @@ if not settings.configured:
     )
     django.setup()
 
-from django.http import JsonResponse  # noqa: E402
-from django.test import Client  # noqa: E402
-from django.urls import path  # noqa: E402
+from django.http import JsonResponse
+from django.test import Client
+from django.urls import path
 
-from pydpop import generate_key, generate_proof  # noqa: E402
-from pydpop.integrations.django import DPoPMiddleware, dpop_exempt  # noqa: E402
+from pydpop import generate_key, generate_proof
+from pydpop.integrations.django import DPoPMiddleware, dpop_exempt
 
 
 def data_view(request):
