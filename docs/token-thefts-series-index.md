@@ -1,4 +1,4 @@
-# Fourteen Token Thefts, One Missing Control — series index
+# Seventeen Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -84,6 +84,18 @@ next theft a non-event.
     identity: bearer-token replay turned stolen CLI tokens into
     release-pipeline authority — DPoP-bound tokens would have been inert in
     the attacker's hands.
+
+16. [Sixteen Token Thefts, One Missing Control](better-auth-magiclink-state-confusion-dpop-analysis.md)
+    — CVE-2026-114607: better-auth OAuth sign-in `state` redeemable as a Magic
+    Link token (cross-protocol state confusion, unauthenticated session takeover,
+    CRITICAL 9.1, fixed in 1.7.7) — a session issued to the wrong holder is only
+    useful if it can be replayed.
+
+17. [Seventeen Token Thefts, One Missing Control](authlib-octkey-token-forgery-batch-dpop-analysis.md)
+    — the library that inspired pydpop had a token-forgery week: Authlib 1.9.0/1.9.1
+    batch, OctKey key-validation bypasses forging arbitrary claims (HIGH 7.4 ×2)
+    plus captured-token replay shapes (MEDIUM ×2) — DPoP is the last line of
+    "a forged token still needs a real key".
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
