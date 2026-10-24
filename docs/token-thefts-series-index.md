@@ -1,4 +1,4 @@
-# Seventeen Token Thefts, One Missing Control — series index
+# Nineteen Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -96,6 +96,20 @@ next theft a non-event.
     batch, OctKey key-validation bypasses forging arbitrary claims (HIGH 7.4 ×2)
     plus captured-token replay shapes (MEDIUM ×2) — DPoP is the last line of
     "a forged token still needs a real key".
+
+18. [Eighteen Token Thefts, One Missing Control](reqllm-websocket-bearer-theft-dpop-analysis.md)
+    — CVE-2026-107685: agentjido req_llm ≥1.9.0 <1.29.0 started WebSockex
+    with `verify: :verify_none` (and dropped callers' `cacerts`/`ssl_options`),
+    so an on-path attacker read the `authorization` bearer header of every
+    OpenAI Responses/Realtime/Codex WebSocket session — the captured OAuth
+    access token is replayable from anywhere unless it is sender-bound.
+
+19. [Nineteen Token Thefts, One Missing Control](kruize-autotune-credential-disclosure-dpop-analysis.md)
+    — CVE-2026-110975: Kruize Autotune's unauthenticated REST API serialized
+    datasource configs with default Gson — basic-auth passwords, bearer tokens,
+    API keys, and OAuth2 client secrets returned in cleartext to any network
+    client (HIGH 7.4). The bearer-token portion dies on contact with DPoP;
+    static secrets need their own fix.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
