@@ -1,4 +1,4 @@
-# Nineteen Token Thefts, One Missing Control — series index
+# Twenty Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -110,6 +110,14 @@ next theft a non-event.
     API keys, and OAuth2 client secrets returned in cleartext to any network
     client (HIGH 7.4). The bearer-token portion dies on contact with DPoP;
     static secrets need their own fix.
+
+20. [Twenty Token Thefts, One Missing Control](kener-dummy-secret-session-forgery-dpop-analysis.md)
+    — CVE-2026-116747: Kener 3.0.0 through before 4.1.10 falls back to a
+    hardcoded `DUMMY_SECRET` when `KENER_SECRET_KEY` is unset (HIGH 8.1,
+    CWE-321) — an unauthenticated attacker knowing one admin email forges a
+    `kener-user` cookie straight into `/manage/api`. The forgery family, at
+    its purest: nothing is stolen, the token is minted on demand — and a
+    sender-constrained token is exactly what a minted string cannot redeem.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
