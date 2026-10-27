@@ -100,8 +100,9 @@ _VARIANTS: dict[str, dict[str, Any]] = {
     },
 }
 
-_EC_SIG_DER_MIN = 70  # DER Ecdsa-Sig-Value for P-256: 70..72 bytes
-_EC_SIG_DER_MAX = 72
+_EC_SIG_DER_MAX = 72  # DER Ecdsa-Sig-Value for P-256: at most 72 bytes
+# (shorter when r/s are small: DER integers drop leading zeros and only
+# pad 0x00 when the top bit is set, so 68/69-byte encodings are valid)
 _EC_PK_LEN = 65  # X9.62 uncompressed: 0x04 || x || y
 _EC_DER_PRIV_LEN = 51  # RFC 5915 DER ECPrivateKey for P-256
 _SEED_LEN = 32
@@ -190,7 +191,7 @@ def composite_verify(variant: str, pub_raw: bytes, message: bytes, signature: by
     cfg = _cfg(variant)
     if len(pub_raw) != cfg["ml_pk_len"] + _EC_PK_LEN:
         raise ValueError("bad composite public key length")
-    if not (cfg["ml_sig_len"] + _EC_SIG_DER_MIN <= len(signature) <= cfg["ml_sig_len"] + _EC_SIG_DER_MAX):
+    if len(signature) <= cfg["ml_sig_len"] or len(signature) > cfg["ml_sig_len"] + _EC_SIG_DER_MAX:
         raise ValueError("bad composite signature length")
     ml_sig, es_sig = signature[: cfg["ml_sig_len"]], signature[cfg["ml_sig_len"] :]
     ml_pk = cfg["ml_pub_cls"].from_public_bytes(pub_raw[: cfg["ml_pk_len"]])

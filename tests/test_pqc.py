@@ -21,7 +21,7 @@ from pydpop import (
     select_alg,
     verify_proof,
 )
-from pydpop.composite import composite_verify
+from pydpop.composite import composite_public_raw, composite_sign, composite_verify, mldsa_available
 
 HTM = "POST"
 HTU = "https://server.example.com/token"
@@ -84,7 +84,10 @@ def test_hybrid_signature_is_ml_dsa_plus_der(alg):
     raw = _b64u_decode(proof.split(".")[2])
     ml_sig_len = 2420 if "ML-DSA-44" in alg else 3309
     der = raw[ml_sig_len:]
-    assert 70 <= len(der) <= 72
+    # NOTE: no 70-byte lower bound — DER Ecdsa-Sig-Value for P-256 is at
+    # most 72 bytes but shorter (68/69) when r/s are small; the old
+    # 70..72 gate wrongly rejected valid short encodings (~0.2%).
+    assert len(der) <= 72
     assert der[0] == 0x30 and der[1] == len(der) - 2  # DER SEQUENCE
     verify_proof(proof=proof, htm=HTM, htu=HTU)
 
@@ -227,3 +230,53 @@ def test_es256_still_default():
     header = json.loads(_b64u_decode(proof.split(".")[0]))
     assert header["alg"] == "ES256"
     verify_proof(proof=proof, htm=HTM, htu=HTU)
+
+
+@pytest.mark.skipif(not mldsa_available(), reason="ML-DSA unavailable")
+def test_short_der_composite_signature_verifies():
+    """Regression (2026-10-25 evolve flake): a valid composite signature
+    whose DER ECDSA half is shorter than 70 bytes must verify.
+
+    The old length gate (ml_sig_len+70..72) rejected valid 68/69-byte DER
+    encodings — DER integers drop leading zeros and only pad 0x00 when the
+    top bit is set, so small r/s give short encodings (~0.2% of P-256
+    signatures). The gate now keeps only the 72-byte upper bound.
+    """
+    from cryptography.hazmat.primitives.asymmetric import ec as _ec
+
+    ml_seed = os.urandom(32)
+    ec_key = _ec.generate_private_key(_ec.SECP256R1())
+    pub_raw = composite_public_raw("ML-DSA-44-ES256", ml_seed, ec_key)
+    message = b"regression: short DER"
+    sig = None
+    for _ in range(5000):
+        candidate = composite_sign("ML-DSA-44-ES256", ml_seed, ec_key, message)
+        if len(candidate) - 2420 < 70:
+            sig = candidate
+            break
+    assert sig is not None, "no short-DER signature in 5000 tries"
+    composite_verify("ML-DSA-44-ES256", pub_raw, message, sig)
+
+
+@pytest.mark.skipif(not mldsa_available(), reason="ML-DSA unavailable")
+def test_short_der_not_rejected_for_length():
+    """A short-but-wellformed DER half must fail on ECDSA validity, not length.
+
+    With the old gate this raised 'bad composite signature length'; with
+    the fixed gate it passes the length check and fails where it should —
+    at ECDSA verification — because (r, s) = (1, 1) is not a real signature.
+    """
+    from cryptography.hazmat.primitives.asymmetric import ec as _ec
+    from cryptography.hazmat.primitives.asymmetric.utils import (
+        encode_dss_signature,
+    )
+
+    ml_seed = os.urandom(32)
+    ec_key = _ec.generate_private_key(_ec.SECP256R1())
+    pub_raw = composite_public_raw("ML-DSA-44-ES256", ml_seed, ec_key)
+    message = b"regression: short DER gate"
+    real = composite_sign("ML-DSA-44-ES256", ml_seed, ec_key, message)
+    short_der = encode_dss_signature(1, 1)  # canonical DER, 8 bytes
+    assert len(short_der) < 70
+    with pytest.raises(ValueError, match="ECDSA component invalid"):
+        composite_verify("ML-DSA-44-ES256", pub_raw, message, real[:2420] + short_der)
