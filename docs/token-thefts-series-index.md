@@ -1,4 +1,4 @@
-# Twenty Token Thefts, One Missing Control — series index
+# Twenty-Two Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -118,6 +118,26 @@ next theft a non-event.
     `kener-user` cookie straight into `/manage/api`. The forgery family, at
     its purest: nothing is stolen, the token is minted on demand — and a
     sender-constrained token is exactly what a minted string cannot redeem.
+
+21. [Twenty-One Token Thefts, One Missing Control](nest-admin-hardcoded-jwt-secret-dpop-analysis.md)
+    — CVE-2026-117564: nest-admin before 1.0.1 committed a hardcoded
+    `JWT_SECRET` in `.env.production` (CRITICAL 9.8, CWE-321) — an
+    unauthenticated attacker self-signs a JWT that `JwtStrategy` and
+    `RbacGuard` accept for any user ID or the admin role. The forgery
+    family, fourth occurrence — and this time the forged object is a
+    standard JWT access token itself, squarely on DPoP's home ground.
+    Upgrade to 1.0.1 is not enough alone: deployed instances must also
+    rotate the key.
+
+22. [Twenty-Two Token Thefts, One Missing Control](redaxo-predictable-secret-login-forgery-dpop-analysis.md)
+    — CVE-2026-117532: REDAXO core 5.3.0 through 5.21.3 (patched in
+    5.21.4) — the `structure/history` plugin's session-tied secret could
+    be pushed into a predictable state unauthenticated, letting an
+    attacker forge a temporary login token for any account including
+    admin (CRITICAL 9.8); outside live mode the admin session escalates
+    to code execution. The twist the series had not seen: the key was
+    never leaked, only made guessable. Retrospective disclosure — the
+    patch shipped 2026-08-03, the CVE published 2026-10-27.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
