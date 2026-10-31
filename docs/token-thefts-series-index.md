@@ -1,4 +1,4 @@
-# Twenty-Five Token Thefts, One Missing Control — series index
+# Twenty-Six Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -168,6 +168,16 @@ next theft a non-event.
     interaction, and an absent non-default configuration; the
     vendor's own restricted-token binding is the same idea DPoP
     applies to OAuth access tokens.
+
+26. [Twenty-Six Token Thefts, One Missing Control](hardcoded-jwt-secrets-opendeepwiki-ngantdadmin-dpop-analysis.md)
+    — Two hardcoded-JWT-secret forgeries published the same day:
+    CVE-2026-119597 (OpenDeepWiki through 2.0.6, CRITICAL 9.3 — the
+    fix commit is on main but no release carries it) and
+    CVE-2026-61737 (ng-antd-admin before 22.0, CRITICAL 9.8 — the fix
+    shipped in v22.0 but old deployments never upgraded) — one
+    lesson in both directions: "patched" and "protected" are
+    different states, and the gap between them is where forged
+    tokens keep working.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
