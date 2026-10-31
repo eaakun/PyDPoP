@@ -1,4 +1,4 @@
-# Twenty-Three Token Thefts, One Missing Control — series index
+# Twenty-Four Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -148,6 +148,16 @@ next theft a non-event.
     takeover from one lured click, and the closest sibling of #16's
     cross-protocol state confusion: a token in the wrong hands through
     a flow confusion, not a break-in.
+
+24. [Twenty-Four Token Thefts, One Missing Control](kafka-oauthbearer-jwks-fallback-dpop-analysis.md)
+    — CVE-2026-110985: Kafka brokers on SASL/OAUTHBEARER with the
+    default validator and no JWKS endpoint URL silently fell back to a
+    non-verifying validator, accepting any structurally valid JWT —
+    including `alg:none` — and letting an unauthenticated remote
+    attacker forge any principal, superusers included (fixed 4.2.2,
+    4.3.1, 4.4.0, fail-closed) — the series' purest "the verifier does
+    not verify" specimen, and its thinnest DPoP angle yet: a verifier
+    that verifies nothing cannot be fixed by sender-constrained tokens.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
