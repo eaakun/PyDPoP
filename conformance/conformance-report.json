@@ -1,0 +1,236 @@
+{
+  "implementation": "pydpop",
+  "corpus": "RFC 9449 + SEP-1932 (DPoP Profile for MCP)",
+  "cases": [
+    {
+      "id": "G01",
+      "title": "proof carries typ dpop+jwt, alg ES256, EC P-256 jwk",
+      "spec": "RFC 9449 §4.2",
+      "category": "generation",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "G02",
+      "title": "ath equals base64url(SHA-256(access token))",
+      "spec": "RFC 9449 §4.3",
+      "category": "generation",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "G03",
+      "title": "nonce claim present when server nonce supplied",
+      "spec": "RFC 9449 §4.3",
+      "category": "generation",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "G04",
+      "title": "htu strips query and fragment",
+      "spec": "RFC 9449 §4.3",
+      "category": "generation",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "G05",
+      "title": "hybrid proof carries ML-DSA alg in header and jwk",
+      "spec": "draft-ietf-jose-pq-composite-sigs-05",
+      "category": "generation",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "A01",
+      "title": "valid proof verifies",
+      "spec": "RFC 9449 §4.3",
+      "category": "accept",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "A02",
+      "title": "proof with matching ath verifies",
+      "spec": "RFC 9449 §4.3",
+      "category": "accept",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "A03",
+      "title": "proof with matching nonce verifies",
+      "spec": "RFC 9449 §8/§9",
+      "category": "accept",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "A04",
+      "title": "iat at -300s accepts under SEP window",
+      "spec": "SEP-1932 § Stateless Replay",
+      "category": "accept",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "A05",
+      "title": "iat at +300s accepts under SEP window",
+      "spec": "SEP-1932 § Stateless Replay",
+      "category": "accept",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "A06",
+      "title": "hybrid proof verifies",
+      "spec": "draft-ietf-jose-pq-composite-sigs-05",
+      "category": "accept",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R01",
+      "title": "tampered payload rejected (bad signature)",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R02",
+      "title": "wrong htm rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R03",
+      "title": "wrong htu rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R04",
+      "title": "iat at -301s rejected under SEP window",
+      "spec": "SEP-1932 § Stateless Replay",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R05",
+      "title": "iat at +301s rejected under SEP window",
+      "spec": "SEP-1932 § Stateless Replay",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R06",
+      "title": "missing jti rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R07",
+      "title": "replayed jti rejected by stateful store",
+      "spec": "RFC 9449 §11.1",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R08",
+      "title": "ath mismatch rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R09",
+      "title": "nonce mismatch rejected",
+      "spec": "RFC 9449 §8/§9",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R10",
+      "title": "alg none rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R11",
+      "title": "alg HS256 rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R12",
+      "title": "missing embedded jwk rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R13",
+      "title": "typ other than dpop+jwt rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R14",
+      "title": "malformed JWT rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "R15",
+      "title": "non-EC jwk rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "T01",
+      "title": "token response cnf.jkt matches proof key thumbprint",
+      "spec": "SEP-1932 § Obtaining / RFC 9449 §6",
+      "category": "signaling",
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "id": "N01",
+      "title": "use_dpop_nonce retry flow: reject then accept with nonce",
+      "spec": "SEP-1932 § Server-Provided Nonces",
+      "category": "nonce",
+      "result": "PASS",
+      "note": ""
+    }
+  ],
+  "summary": {
+    "passed": 28,
+    "skipped": 0,
+    "failed": 0,
+    "total": 28
+  }
+}

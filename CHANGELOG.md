@@ -4,6 +4,17 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
 
 ## [Unreleased]
 
+### Added
+
+- DPoP conformance corpus (`conformance/`): 28 runnable cases covering
+  RFC 9449 proof generation/verification plus the SEP-1932 profile
+  MUSTs (token-endpoint `cnf.jkt` binding, ±300 s `iat` window edges,
+  `use_dpop_nonce` retry flow). `python conformance/run.py` executes
+  the corpus against the local checkout and writes
+  `conformance/conformance-report.json`; `--dump-corpus` exports the
+  corpus for other implementations. Results: 28/28 pass on pydpop
+  (see `docs/conformance.md`).
+
 ### Changed
 
 - Composite signatures now follow draft-ietf-jose-pq-composite-sigs-05 §4.2
