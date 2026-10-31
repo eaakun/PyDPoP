@@ -1,4 +1,4 @@
-# Twenty-Two Token Thefts, One Missing Control — series index
+# Twenty-Three Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -138,6 +138,16 @@ next theft a non-event.
     to code execution. The twist the series had not seen: the key was
     never leaked, only made guessable. Retrospective disclosure — the
     patch shipped 2026-08-03, the CVE published 2026-10-27.
+
+23. [Twenty-Three Token Thefts, One Missing Control](triggerdev-cli-auth-code-pat-takeover-dpop-analysis.md)
+    — CVE-2026-114089: Trigger.dev before 4.5.2 minted a Personal Access
+    Token with no consent step when a logged-in victim was lured to
+    `/account/authorization-code/<code>`, and the victim's PAT could
+    then be collected from the unauthenticated `/api/v1/token`
+    endpoint (HIGH 8.8, CWE-352, fixed in 4.5.2) — full account
+    takeover from one lured click, and the closest sibling of #16's
+    cross-protocol state confusion: a token in the wrong hands through
+    a flow confusion, not a break-in.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
