@@ -1,4 +1,4 @@
-# Twenty-Four Token Thefts, One Missing Control — series index
+# Twenty-Five Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -158,6 +158,16 @@ next theft a non-event.
     4.3.1, 4.4.0, fail-closed) — the series' purest "the verifier does
     not verify" specimen, and its thinnest DPoP angle yet: a verifier
     that verifies nothing cannot be fixed by sender-constrained tokens.
+
+25. [Twenty-Five Token Thefts, One Missing Control](openam-cdsso-session-token-exposure-dpop-analysis.md)
+    — CVE-2026-45049: OpenAM's CDSSO servlet let a logged-in user's raw
+    session token be POSTed to an attacker-controlled URL when the
+    victim visited a crafted link (HIGH 8.3, through 16.0.6, patched
+    16.1.1) — a bearer credential replayable across every domain the
+    session logged into, gated on CDSSO being enabled, user
+    interaction, and an absent non-default configuration; the
+    vendor's own restricted-token binding is the same idea DPoP
+    applies to OAuth access tokens.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
