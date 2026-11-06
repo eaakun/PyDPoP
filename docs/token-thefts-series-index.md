@@ -1,4 +1,4 @@
-# Twenty-Six Token Thefts, One Missing Control — series index
+# Twenty-Seven Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -178,6 +178,14 @@ next theft a non-event.
     lesson in both directions: "patched" and "protected" are
     different states, and the gap between them is where forged
     tokens keep working.
+
+27. [Twenty-Seven Token Thefts, One Missing Control](aj-report-hardcoded-jwt-share-token-dpop-analysis.md)
+    — CVE-2026-120209: AJ-Report through 1.7.1 signs Share-Tokens with a
+    hardcoded JWT secret (CWE-321, CRITICAL 9.8) — an unauthenticated
+    attacker forges a Share-Token with reportCode 'dataSet' and reaches
+    the testTransform endpoint, which hands scripts to GroovyClassLoader
+    for unauthenticated RCE. No fixed version is marked in the CVE
+    record as of publication.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
