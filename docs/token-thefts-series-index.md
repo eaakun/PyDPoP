@@ -1,4 +1,4 @@
-# Twenty-Eight Token Thefts, One Missing Control — series index
+# Twenty-Nine Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -193,6 +193,13 @@ next theft a non-event.
     x.azurecr.io.attacker.com/img sends the build's Azure AD ARM access
     token to the attacker's /oauth2/exchange — the token is replayable
     against ARM and exchangeable for ACR credentials (fixed in 1.25.20).
+29. [Twenty-Nine Token Thefts, One Missing Control](mcp-client-resource-confusion-dpop-analysis.md)
+    — Two MCP clients, one missing check, published the same day:
+    CVE-2026-123272 (mcp-go < 1.2.1) and CVE-2026-123271 (ChatCLI <
+    v1.215.2), both HIGH 8.0 — each took the resource indicator straight
+    from the server's Protected Resource Metadata, letting a malicious
+    MCP server claim another resource and walk away with the user's
+    bearer token (fixed in 1.2.1 / v1.215.2).
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
