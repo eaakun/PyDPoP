@@ -1,0 +1,538 @@
+{
+  "format": "pydpop-conformance-vectors/1",
+  "corpus": "RFC 9449 + SEP-1932 (DPoP Profile for MCP)",
+  "reference_time": 1793923200,
+  "reference_time_iso": "2026-11-06T00:00:00Z",
+  "evaluation": {
+    "now": "verify every step with now = reference_time",
+    "clock_skew": "use the step's clock_skew (300 unless stated)",
+    "jti_store": "one fresh store per case, shared across its steps",
+    "structure": "decode the proof; compare header/claims against expect_header/expect_claims (nested dicts match by subset)",
+    "signaling": "expect_cnf_jkt must equal the RFC 7638 thumbprint of the proof's embedded jwk"
+  },
+  "keys": {
+    "es256": {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "8StwAb6u6Zs7zlvW-80SxIaKRZOInSTzCepL037OrlU",
+      "y": "Hr0_uKBC-D6UEl5vypB3bG8gRIwfT-R-dXYSE4tJVE0",
+      "d": "zcoLmjHxcTxscOMQ0Mu-Nc9bZvGbZ_iI5FRC1ftNqH8",
+      "note": "TEST KEY ONLY — generated for this fixture set, never use in production"
+    }
+  },
+  "cases": [
+    {
+      "id": "G01",
+      "title": "proof carries typ dpop+jwt, alg ES256, EC P-256 jwk",
+      "spec": "RFC 9449 §4.2",
+      "category": "generation",
+      "expected": "structure",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJHMDEtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.9LTQ6k6o599XT_jwl-SAxXT6k4pun0YE5LypySF6aF75DjTMUelRT7deEwBBnR_IfSctaGN-HCIyXk0Q9ZB9LQ",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "structure",
+          "expect_header": {
+            "typ": "dpop+jwt",
+            "alg": "ES256",
+            "jwk": {
+              "kty": "EC",
+              "crv": "P-256"
+            }
+          },
+          "expect_claims": {
+            "htm": "POST",
+            "htu": "https://mcp.example.com/token",
+            "iat": 1793923200,
+            "jti": "G01-1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02",
+      "title": "ath equals base64url(SHA-256(access token))",
+      "spec": "RFC 9449 §4.3",
+      "category": "generation",
+      "expected": "structure",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJHMDItMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMCwiYXRoIjoieXlqVWZTaHRTODF2YWdjTjhpVkgzSGR1RndlNXdYbUhuZmJnaGRkc0MxOCJ9.nvGeHPt2vkyr4xvSl_gNVzXKVrS1cGEPmzw4j7bVwIfbgMUVqn8abnj54TvHrru3IYNuP4Z2UmTD13SxDxKMSQ",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "structure",
+          "expect_claims": {
+            "ath": "yyjUfShtS81vagcN8iVH3HduFwe5wXmHnfbghddsC18"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03",
+      "title": "nonce claim present when server nonce supplied",
+      "spec": "RFC 9449 §4.3",
+      "category": "generation",
+      "expected": "structure",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJHMDMtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMCwibm9uY2UiOiJzZXJ2ZXItbm9uY2UtMSJ9.NSMgULckUfx3cciHzle6DrrmgCYfEY8Mo595zh81_69Pc5ZT095wckqUIIovMex0FdGOM5ZrYOwt19tmknzieg",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "structure",
+          "expect_claims": {
+            "nonce": "server-nonce-1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04",
+      "title": "htu strips query and fragment",
+      "spec": "RFC 9449 §4.3",
+      "category": "generation",
+      "expected": "structure",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJHMDQtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.GkXdzg6RvrGOGI3gM_LzXntH1eZ3ICfrLlrJdKEgZotLFe3hiFNGjAk6LWkEdkcG_5NxJzoxSJQpNCdQfyV_4w",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "structure",
+          "expect_claims": {
+            "htu": "https://mcp.example.com/token"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05",
+      "title": "hybrid proof carries ML-DSA alg in header and jwk",
+      "spec": "draft-ietf-jose-pq-composite-sigs-05",
+      "category": "generation",
+      "expected": "structure",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6Ik1MLURTQS00NC1FUzI1NiIsImp3ayI6eyJrdHkiOiJBS1AiLCJhbGciOiJNTC1EU0EtNDQtRVMyNTYiLCJwdWIiOiJoQWM1U2ZGT0g3bFVDc2dlODItZVplbkhRUkhzelV5d2tBU1d4T18zSTVvdGtrWTZMNDFRaFZlazRJMTR0RnprRDhxZEVQbHRIR2o4bElFcE1nZnlScC01SFUzcmltcHdDd2F1V1JIalpnaE12QTFYOXBkX0M5cWh0Tm5uM0ZxanZqNU5TQk43aWRvUTkzUkFDQVhlZU45bS10Nm84Tk5lZWpSajJ1SWVhMTMweTBKdTg2eVJjSWIzekpLV3RQdFJCTl81RG5NQUpxU2IyUnUxQjJ2c0YzcF9WWmxpMkppSkktVWk3Tjdwb2VqNkJiUUFpSEZDWDBwbEdxblVtMV95amg5Y2hJdlBKRGM0UWp3dmhuNmdPSUZSdUtuLWhHeVlDY2U3UmZxUy01VG4wOFJxaG5Ha2Y4M3J2NVIxeGQ4cW5ocUlJeHhBaDVNczFzWGtXd3ctMTgtenh4dnM4UElJeXhvYU1KQWViNTlLTEd2YWVJVTFvaXI0dUdoV2JESERvbF8zRW5QZ0J2ZWxGVHRfS0JlRjVqUU0xbnEzd05yTnFVY204ZzFhVEw2Z1Y3aTNNZ1hHejFBX2NWeGxaV2JELThwb2h5bzhOQ3VBLWpkSUpUSzVCS3FGdi1fUjNHeEpNbzhMNmk2MG9LalVPQ3lUb01TYmE4LUdsVzhuNURHd1loUko4TFA1V0RUWmx6Q2xyZ1RQaUQyN1psOFpkNU03UUdDb1pPbnpBR1pucjdkUG9nZ2c1VWFJMGR5MjlTM3dHek9yNl9kaUg4QzY3QllMcm5acEc4Q0I4ZUctaGNKaHE1SW9JTmJzTklFYnZXNXlJTkpVcktlQVp6WGdMWkdPYVluZzdLLXVVeS1LdUFOektsYk53Z0NyUHE5M25DZWdDTFhfZ3gxUGFqRWVqSWVfYWthMzk2ZUp2UUo5aU0xWlVYdDNfVlZlc3pGQnFMMXJPTUZHU3h4ak1aSE94YV9RT1N0clpHQU1iRU4tNmRuRVNPY2trSzJDNFpVVE1yaEdCckVVYzB4dHU0MmRkeEdtMVZyNTJPSDhpbG1JNnA1NEwyTTFycUdmRUdFMVBnRXJlZ3g3bE14V2dMS1FuSEdUZ1hGWXBVTEw2VTRuRnAwWFVuX2JpYmRqOElCSEp5b1c4cGxyclUxRm4tclU0VHQtZ2doWjRMbUxfVUNiQ2Vrb3NneFZ2YmFiMS02b3AtdE5Ib3RqU3o5QjMyQ1lEX2R2aHBHQ2pWOWJTbXk3VDdIcV9lRmx3TFZSVUNLS1R4dkhISG8wdG9WeWpGZXZHVU5yaFVfS3BwOWdJVnFLWW5GNTB6azRHVGw0RjltWGZTMnFNZEhSUWFSbDU1LUpIcDRVcXpzeTBiN0lQWGpGeklVTnAxODNMaUdqTUpuWUZMUUdaNDZiaWRuMHFMOVBiN3J6UElHRlhkRGNkcnotUXhhZHpsTWhUSkczMWxQeFZMZ3hUOVFYSlRCTHlCOFVTcVZ4Zm91TG9KTXE4NUUwY2RUQ1ktb3JZbzlHTENudEl5X09GMzROSG1JcXdvdWstS3NOWnVmZEpRYnFiWk1GU1J0cUtXOGJTcjhqT185U0h1U1EzVkpFbXlzRm11MXp4Q1lPTWlOY0pLZm5sdklpYVhYd19MbndfNlNuSjFqXzJsemFlVXY5YXk3ZVFZc3Njb29QbGdrRjd3UGl6WUJOV2VjNVZJV3JzcVluclV2alJ4OVM0M0xuXzh6UWpKaDlEX1daVlIwdlR3ZGgxeDJxUGphQlYwejJRYmZnaUFJWU14UmVqX3FQS196VjR2LXlDb08tU1NTMExNNFlsbjY0Sm5fWWFwRS1pN2ZPVVpKZW1SazNibHlQOWFmQkJEZUZZdlhiV0tMS3kyNmVZWDBIc1FpaWJCT281VEtMcVlsUmxsZUxnOFFreW9MQ3pjRG1lYVBNTWtmMFQ3YlNQZVY3M0o4bE45dUNhN1RMaWVmbkNvSTNEYi1OLW9KX3hoZWM1NGJaZjZLTl8yMmduQzdZcXZFX0tKU3RjYlB6LUVFZU01VHZFVlNRZjJPRGluZ3JFMldFeXlIY2EwSENOWU1zQnJEUG9nM1o4bmhnbG9TYTZsVnlMQ0FTeFdMXzV3ZVU4NTRwMUwxMWJXRTg4OGdlOGZWbFdmOVFqMEZRS0JJSkZFOXVKOTZFU05EMkdxVWhoMHVkRWl0SFdQaFhUd0tCTkdPaUdKekVDekZVWnFhVlg0ajVqc1Y2UUhaZzVJblhjbWFGZFFPNkpabzhYUFBzNmNlM2xTQ2lLUXVMTmh3ZTFOR200M3JYZ0tEaE44MzZwbUs5Q1JndFlRUnlsRFlBRExnVjNTS3UyMXFKdTY0cl9Bb1RXcDJtWWlDWU5KbVRZWmgtVThPSmdxVTZMaWdHTWxpVy1lX1RwN2FGeUNZem1NV21nTlR3X29ZNnVQak4ifX0.eyJqdGkiOiJHMDUtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.vUf1L0sMLBtLLCgS-eO7tpvXgxwmcp-BxAlbtgdCpHRS4l8dZmVI396PPWSfzNf--MkIgzxnOQEP-Ge4-TBnjjEra5CxYXzrKhKePcwa12pb20TpfbPPGbGKc-bLe6RsvT1CcOIKX2VgePsYn3KUvYvsQ6YazeTXHpCZJXu9lEHKfb8ixkJsK7p8jBhHWDaahRStnVMMWhmZdO5EOOHEMGU6QPmhUDr5AA9Ia2lVi4x7E_ZGfL_C7mUZDzn_valgFckjni5vE4AQXnrjAEpdgcrg7bEwkzRtnR12TVNJLEQwIsnUr-VrLJ_BO9FvMjHeyYQy19x_8irO5Kss8lgbedBX8q0-y7BgV0gFOjr3GIjnvcvk-BsTt2H-cg1XnijMwJ5F55FOwhcTDmy-oVpn3lnf65l6McSGaYkC3oQD33bkUIplxbIJJqYbudKDVnb4XIHOuxtSV4c3OW43fxHC5LgFVNVbPZBYuW-Nm5CQctiPTELflcJRL49mCQu4PDrq9y_2Ca59tO06VISh06rF_JUD2D_D93iBrH6vfCD-KmqH_K-ut9q3CxpuejZLyRwBmu5p2qYfobFBUyXyDD0SHk5nDa8BhrlHzyXk0vZDbJP9aSdgu2kpWZzxxOgZo3bh01dOoFVWtRd2zy3711wRiT2tuDpZO52Crr3Y5EcstkHEtXNRLSG88WN8m3049I0b9AsVNNdV5INeNWvR5_omSunlfHhKJoSsJWgEs3Gu3A8BRTqrZCbDHA5Tc7x8jxOIB8zTAhDLBkDqvF_jBFPOic_eI9njRHgsUttc7d6M0IdOEa1SSwkIaRyDB_6JKcvj7BgIrfhtEJTrO1D57A3ebd_Av_AcxdzTgTZILI2ZGFbty4pp5n9L_ozL-cf5J7ycsqdWNEyeJ_t07HwZu6WmJrJqiCdd-ckwZUj57WA4rcphgpOOpoppHvFLGjbwq2KhDQicQVzxbOKvkf1SPBDUyhmX1vOtu8VmTgmuII3szsc4pdZ5VGzYPGRc1whJh1keFa-0lxuoS8l-slXgnGNtoo5DdL8PM6Lo1wL5vvlhcHBK5w5jNhXxRxAlF1KQ3JQNaZBWA3smStTduDsqdFoV3VTlPL5LpHQ_ceW5G-UwzMs3IRbKmzzOgCDMQgbrtx7SWlQ9lAyGeNTe3GU7J4Xk_QDEpB-LV0B3xi0y3JQXGTtdT7rXLUm-xrsnfF099HwuTe4TET6JbZhg5CdVVf7Cwv1IILub2MeCSv0HQ7IU3c4pi_xGpwwkOf4AUronYGdpGu2ZI60EEVbaWG4rJisMuuzoqwukbkT_bVfP56CoNiVO96A9UCLZfDHl82bmLP9FlMeFYqonbWXqoHlPLBUA2lPOXBcf_agbIaPN2zsEU6xpw9QyZaXZMo91xkbnQ1wytJO7uR2EQ-pupLF9xNHHgx7NZv8LNM30L0NbbWoxQZ0NviyrFGa8yoAv8uXg7GIkuEyglPU1EnLV-B8j-GgmLJ8IK_E8zRtMHEVp_wkh3ARSzYyTEadUy3kzPxG4p3OEYeLb_F_8-1EbT8VEwjdvzYHGVTx-x9KHz0M0LVN0nCSQUqCJPn7-b7x3lJOpkAaNSz82sdTO7lLDYxr5z45AkAWMiTvCNkCoOIJZDEKWYeMEYUIkyDhegcWU521pv83d-RvdcLyywKxD4OAC5gq4uan8G4GYqhhGKjC2vN6yWx00W67KXipXBVqIsTRQ2IA8-QGqnKSOKdE4fGsDLPqBx6or7U7w6D6TAkUsk2Ped6mDJG7TqmwJIhCeH0Wi3V3VGxI26stf6Gf1Jjd0DrrCTPcpTgQmlkDQ3nAY_RonztSgLmGxG-vW7ltcUclVelt-CKt_3-ru-nwGZNjTRHkJN_GbmUSKLt5LF86AwW8f3WbpH3s_5rQvFHSmOZD35S7t6VRUb0oGfvH7byJu3dh0He1M3TrU27TITjrEDzto4tMU2X9yCVVMtibUmZRSHyLuJsojWr6Yk-nAzlMB8Hv761O6F2yHfSKoR39RvfA63UaQreBXtbtaWB2mw4gQ-NYTVQ807QQlbf2ELb-tumhbuMxDzwr2oLHxH4Bog_M4U4N1gVIu2qzzJJi5h6xKpJ4ACwLCy94f73ZlKkMu8GlnaE7co3Xy62JbYCfMrDi7YkhXsgJnCt6XSDjGvpo9Ln2JNLkGewn4DcG_I0vNEfAPEmaRlaAemAhW3jHVotgoP3wiudspVWpravvn20ej237DRFpLW4uHrNEwe42Thf0WEHk3Lja1NBdVNDbHVDyhALCXDV6VVkEgH3EmA02RHIF-1_t1JFX-WZqbbo76NxSXd7rujCVRdQ2dSBjdjtjbxWKuQXQ7pWPElUMCx2V04I-KqXWWu4F2r_fzKIrhVLJNRB9d4oU9zg3qOyYjP2-AhsVdzSTejOmNZ7ciVSieSX4Cgaq-xvaggTK6IOopSPbOpHSSsGYAvGbg4k2QB0XE485ISwsogWBvmg4UMcQAraknraY45DoGEIZtG6gQYi6JoOqFWjYDGJ7l0u0QZ_qEm38hadKsZQMY3VVWVaEhMwAT6Cbg90ezigg0v7kQnMauMjfh85r1lcWbdFOuAASZgo1RFK5PEIoF_XWu4xvejlORVeV9uJTJlR0etUspk0EthZaeNgKSUdDDj_RT2jzD_MnREstLybgFZuuFYIAzYr8GsDB61uFmzA4AFsWwrV5DZ9F7ZltzFY3p8EB4l0nBkcnLQwYCn9G3FVyBd4v-8pXlaZn6fGj_CkqtzP6DNKkT8mL9_104GVt2r0NUWafStn04beDOPMN_TBHsMJ1UzgPVTaHoQtZY4v0_WxR0-vDAE_aeTE7B3WEBb8K5lEHXDlUBgPEK1dmgt6J-BObQXbA9Ru1WHsvXCUVLBu1Z4CHPWGd38W8_e3VHLCCWEHl2eC9jjQmCGzj8be585v4Dn96PVXCBDsXFjh5EFrZ0UMqrc0ZhtuH-0_0_0u002FqwBee4rPLV1TKOEgmplzcF5dP54dkjPszyQct911zWo3DCS7joRhzNocGsYM5EVZE6BTlvk-O6uhRGqldsBI22cwQIHa70N4oC9QkT01MxOpyIvOFzCXR-23h_tlks6VSyeoQDKkBRcXSDhIyfoQoSGypKTVNfbneMkKe7vMHm9gcMDRQtN0dISXeJk6Klr7DEzuLq8BwzNThdX3B1rbK8xdXk9_sAAAAAAAAAAAAAAAAAAAsdMkIwRQIhAKxdwkklPBS0U_hdpBtyZu0RdFKd8-vkCmyi7HMXDOGeAiArjZmSsBDawLwfU9DOciQepz5eZhcbmZL_mK-5gX-Bkg",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "structure",
+          "expect_header": {
+            "alg": "ML-DSA-44-ES256",
+            "jwk": {
+              "alg": "ML-DSA-44-ES256"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "A01",
+      "title": "valid proof verifies",
+      "spec": "RFC 9449 §4.3",
+      "category": "accept",
+      "expected": "accept",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJBMDEtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.XdtMKCF_APfqcvGQkr9tHKjnkDcymayRTvfDlvxXLbwzsJ7Th3b7An-0DiXybHLhlBtuJSapjkmzSqZukhWHaw",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept"
+        }
+      ]
+    },
+    {
+      "id": "A02",
+      "title": "proof with matching ath verifies",
+      "spec": "RFC 9449 §4.3",
+      "category": "accept",
+      "expected": "accept",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJBMDItMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMCwiYXRoIjoieXlqVWZTaHRTODF2YWdjTjhpVkgzSGR1RndlNXdYbUhuZmJnaGRkc0MxOCJ9.fXhgzbZNyC-FZrsz_dC1g4CZPBm7ounJHCAjVqNip1mabvx3BVc3ZBPmvRyTSlbDhbsPFgTLesLR_a2I5lsULQ",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept",
+          "access_token": "test-access-token-123"
+        }
+      ]
+    },
+    {
+      "id": "A03",
+      "title": "proof with matching nonce verifies",
+      "spec": "RFC 9449 §8/§9",
+      "category": "accept",
+      "expected": "accept",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJBMDMtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMCwibm9uY2UiOiJzZXJ2ZXItbm9uY2UtMSJ9.mvjqycgzSBn4__YY92XGVfoKecVy0ojD6x6y_E4KG-EexNvd7ip2gTgAN-jQpT0peI0NHtfQnP5yxCwkrtETgg",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept",
+          "expected_nonce": "server-nonce-1"
+        }
+      ]
+    },
+    {
+      "id": "A04",
+      "title": "iat at -300s accepts under SEP window",
+      "spec": "SEP-1932 § Stateless Replay",
+      "category": "accept",
+      "expected": "accept",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJBMDQtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMjkwMH0.QJpRLY_MDLXq7CB3m-GPbuhy087fnkNWhIjdHAGrx0ewf6AuC7Y09L94IFkHB6yIKRJy7MWNFOC0QsBSSTId2Q",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept"
+        }
+      ]
+    },
+    {
+      "id": "A05",
+      "title": "iat at +300s accepts under SEP window",
+      "spec": "SEP-1932 § Stateless Replay",
+      "category": "accept",
+      "expected": "accept",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJBMDUtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzUwMH0.GUg6i8iYhRTDtxcl1c93Dvcw8u1MKB0yrz42E_ugxNRoZ2WidndA8IowJ6-l-doIs0AifRU3FNtXV1T8iuHGmg",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept"
+        }
+      ]
+    },
+    {
+      "id": "A06",
+      "title": "hybrid proof verifies",
+      "spec": "draft-ietf-jose-pq-composite-sigs-05",
+      "category": "accept",
+      "expected": "accept",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6Ik1MLURTQS00NC1FUzI1NiIsImp3ayI6eyJrdHkiOiJBS1AiLCJhbGciOiJNTC1EU0EtNDQtRVMyNTYiLCJwdWIiOiJaU1ZxM2F2aEprOHB6NHR5S0JJUlA5RE15MHE1dE9od3F2cWhiWHJGT0RIaGZXdFVLM1I4RUhvc3c2X0RBbEJmcTRiU3Y1OFhraUl2a2F5QUd0Vnhqd2diSDNVQlZpbk5ZV0VZaVlqT09ZQ3BmWThEbDhPZjVXdDA0aWIxYmpYX3hydnFQeGxfbEU2azRXc0hhbThfNEVTSGlianEwQ1BNRmVwLWR0MWNwRGVWbVFUek04WGl3ZHc0N1d5S3lhNlRVQXNGZkN6cGJnQVRVTVMtUmVZYkZ3YUlseVRMd1N0bTVlM21mTUJhYnNrbVFNUGI5Z3dXQV9IbW9QMWpQVG9KY21ORGZxOUlKMnVtUGtaS1FqYVpRVURQMHVfWV9kVzdHTHNqNk1wSTloWVZnVUxVbFpYR1o5cFpReGxCSDh1MzZ3cWliWkVwSUFMZkJ6Uk50WlNzeTlkX1lmTHkwdlRPVjFCUjBvdzA0TUhXNDBsUGF4UU5PQTBjYlhrNXZJMHNvYnd2UWtaaTF3T19FWmtLUHNpQXNObDZOanItTkNuNWdoSjlkZS1SZXBLZHhRZkJ5a2t4T1o2czN1ckJva09zakFINGdBTC1CVmgwSXA4T3JKaEJOb0ZrN1Z3Q3R3b1Y5N3lOV1Bhek8wYVl1eENHbWlCV2ttV1VBTEF2eml4SXlsaUJVNE1xd1NId3dqYzRuN3pJd2NBbmpfUkZHcm03YW1kZjZSMUM1Q2hxSHZvbkszS0EtR1ZhT0dCM05CZ1NtZ2dpN05VbTZqVVg5bXNxUS1PWV9ieHd5Zm1zcm1NN0hMVVlCd3hhcHhXOEM1Wk5FNTc0Y3J5bXU3Z2VfQ21kXzF6cEZhX0RTLWR6aWhWZDZhUWxCLW9pXzQ3cmE5UC1rVGkzOHBxbWNIWTZkdUFMRUhTX0I2ZFduZDE0YnJJSUZmWmtnTFg5ZE15akJxcUJ6Wk1NWFB0dTVmYjVxaWYyaVF1NEVUcDV0ZDQ5VXcwLVMwNV81MVhNd2lTaEVDTjA4N052a2FyZ0c3ZmVNazNocDJDWXExT1pYTEJDZW1SV1NKX251cHBma0Fna2VMSjlYUHAtemNud2pRLWFYV3gzU0tsY2RVTFFLRzhabjdieG9FMUJWNDZVZTN2UlhuYVRsVnp4YUZ0cV9aV0V6SGJsa3haSEJaSUhldHJPTWRpS25ZN2M3UjFHT3VzNGhuVUxuOFF1TDRiUmxONTVnWDJHb1VVNGNDd1FaVTZjOVpuODMtR1BsNHJEbVZ2UENDV1RrOEhWT3JTNEVxVHBqNEF4UFU3bFd6Q0xWc2FQZGVVNUF4QW1FNWU3b2ZreEJhRXh5V3ZDT3V1OG5DN3F4ZDVpb1RlLVVzWWVXSElFR0xYc3kwX0d3WGJKSTQ5c2RDdnRLOG5EWEl0MFMyeFBGbEl1UklIVThzSGszYm1MZFl0VXdWRVBrMFRUZnRUQkJOQVdrcjZWQnowTjgtcGhfOHlWWXdQVVJkVFljVVdDVkNXNHhtOVU4bmc1eS05RWhOTkZBWnk3d1h5NWk0QmZIY2xFdE1JX2xodzlGbHNhMWhRWlF1bExBdjhLdmpPdHdWc3V1X1VQZ2VaOXczNjF4ZUZZRFlrOTU2TDQ3Qmc4Uk8weFVUTi1GTElBWXpJVjVVaGZ4S3Q5Z0lPY2U4T2JrV004anFXUnRVOFloZHdsMHFnLVNZYU5qdHVfaTBZeXgtSV9zRkJpeUE3b1RjM0U5Q0NGQXZsZDVBNU9MMU9fYmFVT0JyTDZBaWNHU2hyT3IzUDFCbFVMeFpwYlFwMlpvRXdWZDc3cF8tcEl5Q0pYYkhuVC1vR1BZWDBndkZqeFBBNjVQcUtRZjh4RktXMnZTYTEtVWdvRE5pY3ZENDMzUWdQeVBUa0V6a2hMbkw5NkRFV2VHblQ0TFdhUGx2WndRRS1TZkdUYzZ0VXptZjJ6V2c3dWJwTmpCN0RBQlRwNHM0bzVwZVl2bTcyODJJUy1tMnRYal91eC15MkpqQVhqYnhsZlRJSlh4b1Mybm1CNUxfbFY2NEFZY0ZDaW5qN2pocFh1MHJtRWEyZUQxdmtDNWU2cDdMZXZSdFNVZEVldC1FZEczb2tUNzZ0Q25XdHlLbXZWczI2eWtHOUZyc0Exakpyamxkc0c3WGdudjNqa3djTG1EckpkZEpoaHFvTUFXS3pUMUROQWFTQ3NYQ1AwRUlPa3AxLUR5aGh2aGEyT0NnSHB5alNzWk9TM2twT2wxbDVkYm94NDh6aEVUTG9NNUF2U1J4QllIYlhQbWFwZXdDVGdES0gyRE1TZ1pNeURVNWZNTVlsQVNnUjRENmVCTHlnbGlrUW1FSFVwUjVkbE1uYVpLdkVIOWI2M3UyQWhDSktuQzFNOW5RTFV1NWN2Y01sNXlRLUZVWUR6b3RoR3JPWTRKeHVEQmt6SjBDTTIifX0.eyJqdGkiOiJBMDYtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.MrX4CnfMbCvnGQH8IaixmpSUMFAvBgpXzGlzbwxkR7OVz3tjmJ_lfSVV5fZEinBUEYmaavrPjB-0nExMt8kaQerQ7G9azIpIeBvAVkqJZ_8Hxe-RHaDEpmBuIb0a8vyjaG2e6cIfrPT5k1yW0HloykR6kXee0-wH8exbqUhN1r6Shc8CttO7a99HMwAW9SnoYwT44UxTTgXuTJdaoxr37ibWLhRHPSkuBx5Doui5sRHFV3VoTGfbgapDvq9ZxuYjx1FkO91qTMsmJ0f368z0Qyx3BfdK8QqhmdNVguzJq1ZckuLVpSHGbFFuyh3fHEuNB1VIbtOVJ3DQRayhjo6KZBcz3SS-f0OMf6fwD8UmONNKq_aA-LNG6OlQTY1aeZVOR-v-WQ60agPIJ1fK6rN7LVJkdxb9mH1qTp8KNehB6UZh7PLvEInhMhhX9nQsajm4Wo38knticXRo5VTP7K5FEyGdNjxRpcV0zLMr3wp5CcklQ4buwFtl9OO7-a03INKGvoQlvGZEQtcMPha_sWqRqpzMW_rwAvzA8f4qXW4b5rZgUoNctesFD2nDcuV-h7t1xV8r_RayISF4rFVnZr2iQtN303BbMl8-gA9lE0E1hjW6mV5L8pBCEWZWERWoR-ncY_wMygQpJbigpe3jgsZPy0wYCEmBddn2mmxHgi0BDwFmgum7SukC6HUVFGqDY57q1DqqfKp8tLKK-qtDcgTh0Gd0JsQewMq6TlK6DBFJNPX3BIT_hMkbXu4PdC90VHSTb4r7vUb-Vm931afcVA_wF0BCiFPjBHJaHHMM8fG7cwAR5G29XNahh6BB244IjwGWjWjU8tTBrDtGpq2DOHGa4McIbG9IPXLXL4QJvVQVqGD-hCyjHG4uy3e9RkuR1Lr8IexbDhFi9qfGRjljD1RBE66P1sP3qB9cLH6dWzwI4ZWITB6HXNKrOF9jVnLny8Nl0SKQkOaOjXDS5VJjm4pXKmhVn8z5T0veN7kYCvTgVvN9tWvEKQ5pf8E0HY0y1FGbOcAPF3hYEB5hJh2sKF8AmClt4i4lpIfBN2HhHVhSUD9MAmpPgxCLfTZh7noXhW_f6DeSQ_fposG723tIMO-w4N3vxeA4A7KhkDoKNQPg7mg2felj96VdpMlPA9xoeUvudne3qmLR-5UE10fMvlMsl-6UoSFDl3_YbOqQPR8mRbPlcqrn4Sp_VWy8TmYkDjeDOzAEmuAjMo9nRSr-cAJqqSvyQ-HyYo13hwEgK20IyKH7SPdzILVhDY9AObDs3P5GKwf97gBk0xC6Dco1eoGoPVC1_zjn4oDCSzHGJHqQdg_Mjob9R7Y56i97IzOCoRHvNJCRY3AG6Jps7Njeki0Lfz1yd5ENucp2qGRYJiuwWnmc6j5f4RW-_ONym5BMnHVceSfA-pVlN627OKNftKesEnF7TH0qJeBVpVpQZPaW3CziPz0Rby1xiJvlBuf-fml7CdxTxOmJ4lUESyySW2g_3-xAaTQKJ33MmMrIdZmATU3phVi8CxXwO6TgQxAtfVtn59HPFlQfT_hpmRgSwhDqk28KAcYg2Kg4njZZdt0NcIXpTSos69Gbrrn1v0AbqGhlgzTlTxNc4eJ2t69dIESYM_z4mTUo7dNaMDfKXcnd-KjFhJI3t1IIb06Mes1BMalWK01LmIXR6fJZgMWTck1XuED9_4QU7zA06h5gXIzhAZ8-aYriTfHKajsajtZQsMR_9SC-vGftwUqW3OIl6nQX3PnQNCny4cWtMvxADgtn9jxe8BTsgfLDIDOSMAMgmte4YmzDyktMJrz41Ryi32WQ4FBi-wnwhdmM5uJDBaOWIbbJK3BRgN_OreMiR-Gr4M8vQLI85MPvucOT3vB8wtH38YAFrLrBHW6_YBsn4628k7oepSbgBjUjCT-oRuLTgSNTufWnBBRl33dVEs4Br5Vm75ZnLFIg1SKv1HTcQDf55Ffje1LsggH6Bz8En8BjvwdjZu6sDIe3SQXXfMrz9lDz1JzuniqqFjqk6dSbRMU5mN9Ck5Y5uZsg2ekq9eYJbZg7bgd6_gR5_KGc_4m1ktbyjokPpBHORenu4EYVR-5FjtCMJ3z_R65ymKis5B2jw1UjejCou_-1DSj_dTMRF8asyZZsHvRwlcsnBByRE1yGqxkGDCjvnl4sjnjnFktQLn_hpyueceCu9TlPkbsMAUTBLtKjng28HS98LzAJzSMqmOzxZBXASzrHAZmOn82-6hRqHBSIatwDu-_zy8KlfpDC1Eruy9038e_cQO03Urb4TGSgNkLVd7WM7IvO_H33oCvyujiPv9AWGxOEIsbINKVaKTOQvCCSNFp0E_fH8Q0J4N_2cAYybIZMQY00gXlYLlYz01fgmLZy5o3yaHoVV7s7AL709KlwwW2nOwHKGrHNMXh4he7-tty0PK_DanKT-aTQmtsBVuHZN5lnB2TXP3Pc8Ve3HoKEBV59O8sTJgMr-o2B4JrGsj5pvB9eMAV6e2NM8IC_CQ3ImVlS3jlHT1mz80kS_CAnopSY5A2l1uizMmI9RLMpQ9F1jKnUX1YfSXVRnOl_RUUOUxD79hFP_xYaEgN82XBpYRkv9bOjDH6xBFgH4NGMxSUrajSz3q5Ex5hiPpvv3qFCJDUSRiVygnZWD_TEVxp3IgB9A1XlErmsJGHfZk_Qi7fmK2gcl7y8_2B-ob5PAYw4kTyXUO-mHrVZoaA6othydDbp3Nr8XAKx056pc__DOOEqpPe5aqy_JYFrtAi6uTUXYlZq2pP877Ak81HQdmwDfdwnx7U_ZUEl5EOoT3DLegtwV9SUBL6rTbSE68W4dKJurk-Vn7Nh--j4b7-YDfMGvrR68LpvZCbask4XhaIzKOnHyulAmDgWgrUx_yIUiK_KMFw8CPP8i7L69prkF6nsPIPBNcAaX4ISPlMk__annAvvjAHCtA8GXBUIl5Ltu9b6jGVQkQOPRZfGQaQleK9lUyVSgJgvIkcBralMaXuAeAFPTRKn9ZpecaUpEU4tO0X2g0NLeyc6HnksZ0lxJIbD7PwAbN_S-iIvhTy5KRo7i4wZIRrUR-8duwatEO3j4eZIPQ8O03MypjFG4mL3JiTqnozfYw4Kq-5F72QOPU5adZKUlbq-v8LN0e_3_gUiKywwPFZZZXByeYuOoquwsrO3uNHh4xdoboCHuuDu7_oSHB0gIiY1OEBFT1Rscoetstfk7fT9AAAAAAAAABEpM0kwRgIhAIjQjw8d6NfokVKurMl14VnCMnTOEj-7Otd3gNWRnD9JAiEAu4CSFY7f1RdpekDTtmPxBUVgaCzh_qtIHn8AtCUUeNs",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept"
+        }
+      ]
+    },
+    {
+      "id": "R01",
+      "title": "tampered payload rejected (bad signature)",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDEtMSIsImh0bSI6IkdFVCIsImh0dSI6Imh0dHBzOi8vbWNwLmV4YW1wbGUuY29tL3Rva2VuIiwiaWF0IjoxNzkzOTIzMjAwfQ.6HUe2Uaygwg6xLf8HgymRfIGevwGTS9AN7T7GYSzbvc2FAZx4PSh3DtMh0-DmInaLZ7mGQ9cS8WX7qGOZUiW3g",
+          "htm": "GET",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "bad signature"
+        }
+      ]
+    },
+    {
+      "id": "R02",
+      "title": "wrong htm rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDItMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.wEswjKrVdfUYiUmPTCi_sLr8zBn9Jzkhwbs7OSC1AKw5jgqzkdQmhh5m6IXs7nIFWgakPd6VK-8jlsOk-AMe4Q",
+          "htm": "GET",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "htm mismatch"
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "title": "wrong htu rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDMtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.giNfIx3kL5wt_rWNwoWySxgLvxg5qaULX34vq-EXTr2-g6-3cMbR0KDlS6S0m2U2A2jswCXGv_tKlosPVjBfCw",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/other",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "htu mismatch"
+        }
+      ]
+    },
+    {
+      "id": "R04",
+      "title": "iat at -301s rejected under SEP window",
+      "spec": "SEP-1932 § Stateless Replay",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDQtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMjg5OX0.C41b0aAs7KEX4D924d9rkmpkNJg8RNA5l4PLzk86TH5ltam7Irt1qPCx0ZKHn8ssXcINz11ACwk-p82LK8zpcQ",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "iat outside acceptable window"
+        }
+      ]
+    },
+    {
+      "id": "R05",
+      "title": "iat at +301s rejected under SEP window",
+      "spec": "SEP-1932 § Stateless Replay",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDUtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzUwMX0.XChXKz3eX-vWae9RrsoqWHuRhgxSFseDQ__YW6bOiBCe2QQuu2Phh6-kvpZtNHzV2MM1TcifSmCW89Wq3jIeMg",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "iat outside acceptable window"
+        }
+      ]
+    },
+    {
+      "id": "R06",
+      "title": "missing jti rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9tY3AuZXhhbXBsZS5jb20vdG9rZW4iLCJpYXQiOjE3OTM5MjMyMDB9.bLRTQ2auHysBOsJ3susHRvv6Kd8XTxGC7w039nPz5YEZebtaKc2BeUbiGfF-_z2b36iZPDLQKpAIAbEmqEA6Cw",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "missing jti"
+        }
+      ]
+    },
+    {
+      "id": "R07",
+      "title": "replayed jti rejected by stateful store",
+      "spec": "RFC 9449 §11.1",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDctMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.O9WIHBINuLmVlA8U9DB2YWqVjWBo56rloeqVYH9OH3OcyUvo0XcEpiAnfJpe0RKsoijhf6poTOvtGmFUIgp4MA",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept"
+        },
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDctMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.O9WIHBINuLmVlA8U9DB2YWqVjWBo56rloeqVYH9OH3OcyUvo0XcEpiAnfJpe0RKsoijhf6poTOvtGmFUIgp4MA",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "replayed jti"
+        }
+      ]
+    },
+    {
+      "id": "R08",
+      "title": "ath mismatch rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDgtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMCwiYXRoIjoiN25HR0F2dzRqNFlEM29ncHJNbVpkelBwZWlSaW1DbXY5dkVDRzM5WEoyNCJ9.zqD4zNmiqtww4JdmtpOuc2SlVg3K2msaVto7uzML4ffIdYIyGJW7X_YOuVp0HrbhCf6kCcqE6lusbPVP_8fOjw",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "access_token": "token-B",
+          "reason_contains": "ath mismatch"
+        }
+      ]
+    },
+    {
+      "id": "R09",
+      "title": "nonce mismatch rejected",
+      "spec": "RFC 9449 §8/§9",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJSMDktMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMCwibm9uY2UiOiJub25jZS1BIn0.b8wmd7mVFYsfMPDwH2hahxjzKh2fMmQMAOV69lrrDkxPi-UDiaS_620YNaFZWzBLEWmBhUBCGnQAnsPDN5GHCQ",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "expected_nonce": "nonce-B",
+          "reason_contains": "nonce mismatch"
+        }
+      ]
+    },
+    {
+      "id": "R10",
+      "title": "alg none rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6Im5vbmUiLCJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiI4U3R3QWI2dTZaczd6bHZXLTgwU3hJYUtSWk9JblNUekNlcEwwMzdPcmxVIiwieSI6IkhyMF91S0JDLUQ2VUVsNXZ5cEIzYkc4Z1JJd2ZULVItZFhZU0U0dEpWRTAifX0.eyJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9tY3AuZXhhbXBsZS5jb20vdG9rZW4iLCJpYXQiOjE3OTM5MjMyMDAsImp0aSI6IlIxMC0xIn0.",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "unsupported alg"
+        }
+      ]
+    },
+    {
+      "id": "R11",
+      "title": "alg HS256 rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkhTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9tY3AuZXhhbXBsZS5jb20vdG9rZW4iLCJpYXQiOjE3OTM5MjMyMDAsImp0aSI6IlIxMS0xIn0.m46VyNMEEOxmTovB9B35JFyoi5XiF4ttbO73yF9IO6A",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "unsupported alg"
+        }
+      ]
+    },
+    {
+      "id": "R12",
+      "title": "missing embedded jwk rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2In0.eyJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9tY3AuZXhhbXBsZS5jb20vdG9rZW4iLCJqdGkiOiJSMTItMSIsImlhdCI6MTc5MzkyMzIwMH0.q1VJArW-f4frIPOZ8oZiuCrQE7Wl169umA4bQ3Hche0_o1TsL_4RmTS3yAEKByL4s803CG2WO_Z2tyELvrcP8g",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "missing embedded jwk"
+        }
+      ]
+    },
+    {
+      "id": "R13",
+      "title": "typ other than dpop+jwt rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjhTdHdBYjZ1NlpzN3psdlctODBTeElhS1JaT0luU1R6Q2VwTDAzN09ybFUiLCJ5IjoiSHIwX3VLQkMtRDZVRWw1dnlwQjNiRzhnUkl3ZlQtUi1kWFlTRTR0SlZFMCJ9fQ.eyJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9tY3AuZXhhbXBsZS5jb20vdG9rZW4iLCJqdGkiOiJSMTMtMSIsImlhdCI6MTc5MzkyMzIwMH0.AKqdaINmvWfzSQESsqSyB2jZ0rDxc8wgxDUDo5kj3vqDATR8oqqFPJvw0_OB2duZocsQKnlDGFDVwVRJU_whwQ",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "bad typ"
+        }
+      ]
+    },
+    {
+      "id": "R14",
+      "title": "malformed JWT rejected",
+      "spec": "RFC 9449 §4.3",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "not.a.jwt",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "reason_contains": "malformed"
+        }
+      ]
+    },
+    {
+      "id": "R15",
+      "title": "non-EC jwk rejected",
+      "spec": "RFC 9449 §4.2",
+      "category": "reject",
+      "expected": "reject",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6Im9jdCIsImNydiI6IlAtMjU2IiwieCI6IjhTdHdBYjZ1NlpzN3psdlctODBTeElhS1JaT0luU1R6Q2VwTDAzN09ybFUiLCJ5IjoiSHIwX3VLQkMtRDZVRWw1dnlwQjNiRzhnUkl3ZlQtUi1kWFlTRTR0SlZFMCJ9fQ.eyJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9tY3AuZXhhbXBsZS5jb20vdG9rZW4iLCJpYXQiOjE3OTM5MjMyMDAsImp0aSI6IlIxNS0xIn0.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject"
+        }
+      ]
+    },
+    {
+      "id": "T01",
+      "title": "token response cnf.jkt matches proof key thumbprint",
+      "spec": "SEP-1932 § Obtaining / RFC 9449 §6",
+      "category": "signaling",
+      "expected": "accept",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJUMDEtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.e74fzVTCReo-42XLHDu9L2N0df80BuS4nh40wf8K57SrafjC3h6DlfkGYRdklXkQWzOHaW1MbdVWwgQ8Ly-f0w",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept",
+          "expect_cnf_jkt": "QLaD3MY54pn7iGz1nW_MYSFc4NZ8nXBzzsE7ZK9ajL0"
+        }
+      ]
+    },
+    {
+      "id": "N01",
+      "title": "use_dpop_nonce retry flow: reject then accept with nonce",
+      "spec": "SEP-1932 § Server-Provided Nonces",
+      "category": "nonce",
+      "expected": "flow",
+      "steps": [
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJOMDEtMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMH0.m_sBrUfmkUkBgfL1UW3Dyekt_mqTHjPlxTQdTIto9fQFZN8ptFPBbrE3m0l0cur3fbfwgMHf5VXywt__GeeEbg",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "reject",
+          "expected_nonce": "srv-1",
+          "reason_contains": "nonce mismatch"
+        },
+        {
+          "proof": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiOFN0d0FiNnU2WnM3emx2Vy04MFN4SWFLUlpPSW5TVHpDZXBMMDM3T3JsVSIsInkiOiJIcjBfdUtCQy1ENlVFbDV2eXBCM2JHOGdSSXdmVC1SLWRYWVNFNHRKVkUwIn19.eyJqdGkiOiJOMDEtMiIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL21jcC5leGFtcGxlLmNvbS90b2tlbiIsImlhdCI6MTc5MzkyMzIwMCwibm9uY2UiOiJzcnYtMSJ9.VJr2-gQ7rw1UR7oY1q3owJofa-985sbgiwlKAvNzABLvFP683XQrQA0SeKXXtGu82dbP-xRhDtGWMc1hihVIsA",
+          "htm": "POST",
+          "htu": "https://mcp.example.com/token",
+          "clock_skew": 300,
+          "expect": "accept",
+          "expected_nonce": "srv-1"
+        }
+      ]
+    }
+  ]
+}

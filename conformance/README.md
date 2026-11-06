@@ -35,8 +35,53 @@ unavailable) report SKIP, not FAIL.
 
 ## For other implementations
 
-`python conformance/run.py --dump-corpus` prints the corpus as JSON
-(id, title, spec, category, expected accept/reject). Implement the
-same runner interface against your own verifier and compare case by
-case — that shared corpus is the point. Results for pydpop itself live
-in `docs/conformance.md`.
+The canonical export is `vectors/vectors.json` — the full fixture
+set, not just case metadata. One file, 28 cases, each carrying the
+actual proof JWT strings, the verifier inputs, and the expected
+outcome. Run it against your own implementation and compare case by
+case; that shared yardstick is the point.
+
+File layout:
+
+- `format`: `pydpop-conformance-vectors/1`.
+- `reference_time` / `reference_time_iso`: the fixed "now" every
+  step is evaluated at (2026-11-06T00:00:00Z). `iat` edges are exact
+  against it: ±300 s accepts, ±301 s rejects.
+- `keys.es256`: the single P-256 test key all ES256 proofs are
+  signed with (private part included, labelled TEST KEY ONLY).
+  Hybrid proofs (G05, A06) are self-contained via their embedded
+  JWK and use a fresh composite key per generation.
+- `cases[]`: `id`, `title`, `spec`, `category`, `expected`, and
+  `steps[]`. Every step is self-contained: `proof`, `htm`, `htu`,
+  `clock_skew`, `expect` (`accept` / `reject` / `structure`), plus
+  `access_token` / `expected_nonce` / `reason_contains` /
+  `expect_header` / `expect_claims` / `expect_cnf_jkt` where the
+  case needs them.
+
+Evaluation rules (also recorded in the file's `evaluation` block):
+
+- Verify every step with `now = reference_time` and the step's
+  `clock_skew`.
+- One fresh `jti` store per case, shared across its steps. R07
+  (replay) and N01 (nonce retry) depend on this: R07 is one proof
+  verified twice (accept, then reject as replayed); N01 is reject
+  without the nonce, then accept with it.
+- `structure` steps: decode the proof and compare header/claims
+  against `expect_header` / `expect_claims` (nested dicts match by
+  subset).
+- `signaling` (T01): `expect_cnf_jkt` must equal the RFC 7638
+  thumbprint of the proof's embedded JWK.
+- `reason_contains` is the substring of the verifier's rejection
+  reason (e.g. `bad signature`, `iat outside acceptable window`).
+
+Regenerate the file with `python conformance/generate_vectors.py`
+(it reuses the committed test key). ECDSA signatures use a random
+nonce, so regeneration produces equivalent vectors — identical
+claims, keys, and expected outcomes — with different signature
+bytes; the check that matters is `python conformance/run.py
+--vectors` (28/28 against pydpop's own verifier). Results for
+pydpop itself live in `docs/conformance.md`.
+
+The older metadata-only export is still available:
+`python conformance/run.py --dump-corpus` prints id/title/spec/
+category/expected per case.
