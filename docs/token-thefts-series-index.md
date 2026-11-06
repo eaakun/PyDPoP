@@ -1,4 +1,4 @@
-# Twenty-Nine Token Thefts, One Missing Control — series index
+# Thirty Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -200,6 +200,14 @@ next theft a non-event.
     from the server's Protected Resource Metadata, letting a malicious
     MCP server claim another resource and walk away with the user's
     bearer token (fixed in 1.2.1 / v1.215.2).
+30. [Thirty Token Thefts, One Missing Control](ofbiz-hardcoded-jwt-forgery-dpop-analysis.md)
+    — CVE-2026-105330: Apache OFBiz 24.09.06/07 (CWE-321, no CVSS yet)
+    — the factory-default security.token.key signs JWT SSO tokens, and
+    deployments upgraded from pre-CVE-2026-31986 versions with old
+    security.properties and internal SSO enabled let an unauthenticated
+    remote attacker forge any JWT for full admin access. Upgrading to
+    24.09.08 is not enough alone: the key must also be rotated
+    (./gradlew rotateSecretKeys).
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
