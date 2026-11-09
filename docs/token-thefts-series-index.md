@@ -1,4 +1,4 @@
-# Thirty Token Thefts, One Missing Control — series index
+# Thirty-One Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -208,6 +208,15 @@ next theft a non-event.
     remote attacker forge any JWT for full admin access. Upgrading to
     24.09.08 is not enough alone: the key must also be rotated
     (./gradlew rotateSecretKeys).
+31. [Thirty-One Token Thefts, One Missing Control](vikunja-token-misdelivery-dpop-analysis.md)
+    — Two Vikunja token-misdelivery CVEs published the same day, both fixed
+    in 2.7.1: CVE-2026-123513 (MEDIUM 6.8) — the frontend sends the stored
+    bearer token and desktop OAuth refresh token to an attacker-chosen API
+    URL; and CVE-2026-123499 (MEDIUM 5.9) — veans sends VEANS_TOKEN as a
+    Bearer header to a server named in a repo-controlled .veans.yml. The
+    project's second appearance in the series (#11 was the WebSocket
+    revocation bypass) — the token string keeps being treated as the
+    identity, one endpoint at a time.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
