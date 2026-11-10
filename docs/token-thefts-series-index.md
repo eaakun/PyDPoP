@@ -1,4 +1,4 @@
-# Thirty-One Token Thefts, One Missing Control — series index
+# Thirty-Two Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -217,6 +217,17 @@ next theft a non-event.
     project's second appearance in the series (#11 was the WebSocket
     revocation bypass) — the token string keeps being treated as the
     identity, one endpoint at a time.
+32. [Thirty-Two Token Thefts, One Missing Control](mittwald-mcp-session-token-theft-dpop-analysis.md)
+    — Mittwald's MCP server flaw (exploited 2026-10-27, disclosed
+    2026-11-07, no CVE yet): the attacker read the session tokens of
+    customers who used the server, and each token opened mStudio with
+    the customer's rights — 56 customer projects compromised, eight
+    days undetected. The series' first real-world MCP-server token
+    theft with customer impact; the proof-key-hands test passes (the
+    tokens were stolen from the holder's store, not minted to the
+    attacker), with the honest boundary that these are session tokens,
+    not RFC 9449 OAuth access tokens, and the flaw itself is still
+    undisclosed.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
