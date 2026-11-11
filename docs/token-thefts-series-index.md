@@ -1,4 +1,4 @@
-# Thirty-Two Token Thefts, One Missing Control — series index
+# Thirty-Four Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -228,6 +228,25 @@ next theft a non-event.
     attacker), with the honest boundary that these are session tokens,
     not RFC 9449 OAuth access tokens, and the flaw itself is still
     undisclosed.
+33. [Thirty-Three Token Thefts, One Missing Control](thunderbird-oauth-token-cleartext-dpop-analysis.md)
+    — CVE-2026-126136: Thunderbird sent the user's OAuth2 access token
+    over unencrypted HTTP for Exchange accounts (EWS / Microsoft
+    Graph) — a network observer could take the token and walk into
+    the mailbox until it expired (Mozilla impact moderate, fixed in
+    160 / 153.7). The cleartext-theft shape, met for the first time
+    in a mainstream end-user client rather than a library or server.
+34. [Thirty-Four Token Thefts, One Missing Control](hardcoded-secrets-whms-versa-forgery-dpop-analysis.md)
+    — Two hardcoded-secret forgeries published within an hour of each
+    other: CVE-2026-125383 (INDOTALENT WHMS, CRITICAL 9.3 — a
+    hard-coded JWT signing key, issuer, and audience in
+    appsettings.json lets an unauthenticated remote attacker forge
+    tokens for any user ID or role) and CVE-2026-107244 (Versa VOS,
+    HIGH 7.6 — a hardcoded key and IV let an unauthenticated
+    attacker compute a valid token for the ZTP service's /decryptTest
+    endpoint and obtain a fully authenticated session; gated on the
+    service being left enabled after provisioning). The forgery
+    family, eighth occurrence — rotate the secret first, then make
+    the token worthless without its key.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
