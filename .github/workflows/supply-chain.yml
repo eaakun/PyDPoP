@@ -1,0 +1,73 @@
+name: supply-chain
+
+# Verifiable supply-chain artifacts for pydpop releases.
+#
+# STATUS: UNTESTED — this workflow has never run. It triggers on the
+# next published release; verify its output (provenance, signatures,
+# SBOM) on that release before relying on it. See docs/supply-chain.md.
+#
+# What it does, per the project owner's 2026-11-12 ruling (the
+# DPoP-style release proof was WITHDRAWN — no custom artifact binding
+# is built anywhere; the release chain uses only standard,
+# independently verifiable artifacts):
+#   - SLSA Build Level 3 provenance via the official generator
+#   - Sigstore keyless signing of wheel/sdist
+#   - CycloneDX SBOM publication
+# Downstream can run `dpop audit-release` to consistency-check a
+# release directory (provenance subjects vs files, tag vs provenance
+# commit, SBOM deps vs pyproject).
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write  # Sigstore keyless signing + SLSA provenance
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      digests: ${{ steps.hash.outputs.digests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build distributions
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+      - name: Sign distributions with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v3.1.0
+        with:
+          inputs: ./dist/*.tar.gz ./dist/*.whl
+      - name: Generate CycloneDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: ./
+          format: cyclonedx-json
+          output-file: ./dist/sbom.cyclonedx.json
+      - name: Hash subjects for provenance
+        id: hash
+        run: |
+          (cd dist && sha256sum *.tar.gz *.whl) | base64 -w0 > /tmp/digests.txt
+          echo "digests=$(cat /tmp/digests.txt)" >> "$GITHUB_OUTPUT"
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  provenance:
+    needs: [build]
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subjects: ${{ needs.build.outputs.digests }}
+      upload-assets: true
