@@ -22,6 +22,13 @@
   `DPoPVerificationResult` with a `VerificationFailure` reason instead
   of raising.
 - `jwk_thumbprint(jwk)` → RFC 7638 thumbprint for `cnf.jkt` token binding.
+- `docs/python-dpop-profile.md` is the Python DPoP Interoperability
+  Profile: fixed verification order (jti consumed only at the commit
+  point), stateless/stateful deployment contracts, RFC 8693 exchange
+  boundary. `tests/test_invariants.py` is the executable invariants
+  harness (`pytest tests/test_invariants.py -v`); `conformance/` holds
+  the 28-case cross-language vector suite and `pydpop serve
+  --conformance` serves it over HTTP.
 
 ## Signature algorithms
 
