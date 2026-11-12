@@ -102,10 +102,22 @@ class DPoPVerificationResult:
 class ReplayStore(Protocol):
     """Replay cache for DPoP ``jti`` values.
 
-    :meth:`check_and_record` must be atomic: the ``jti`` is recorded
-    if and only if it was not already present, so two concurrent
-    verifications of the same proof cannot both pass. ``iat`` is the
-    proof's issued-at time; a store may use it to bound retention
+    CONTRACT — not a suggestion, not a best-effort guideline. The
+    verifier calls :meth:`check_and_record` exactly once per
+    verification, and only after every other check has passed: it is
+    the verification commit point (see the fixed verification order
+    in docs/python-dpop-profile.md). The call must be atomic: the
+    ``jti`` is recorded if and only if it was not already present,
+    so two concurrent verifications of the same proof resolve
+    one-win-one-loss — exactly one returns True. A store that
+    records a ``jti`` before the proof is fully accepted, or that
+    lets two concurrent calls both succeed, violates the contract
+    and voids the replay guarantee: a failed proof would burn a
+    legitimate ``jti`` (denial of service against the real client),
+    or a replayed proof would slip through.
+
+    ``iat`` is the proof's issued-at time (already validated by the
+    time the verifier calls); a store may use it to bound retention
     (e.g. refuse to retain entries older than the token lifetime).
     Return ``False`` when the ``jti`` was already seen.
     """
@@ -122,7 +134,11 @@ class MemoryJtiStore:
     expired entries, then records the ``jti`` iff unseen. Retention is
     keyed off receipt time (``iat`` is accepted for protocol
     conformance); use a persistent store in multi-instance deployments
-    — process memory does not survive restarts or share across workers.
+    — process memory does not survive restarts or share across workers
+    (see the three failure modes in docs/python-dpop-profile.md).
+    Single-process atomicity holds because the check-and-set is one
+    dict operation under the GIL; multi-process deployments need a
+    store with a real atomic primitive (e.g. Redis SETNX).
     """
 
     def __init__(self, ttl: int = 600):
@@ -170,6 +186,15 @@ def _verify_or_raise(
     result or raise :class:`DPoPError` (with ``reason``) at the first
     failing check. Accept/reject decisions are identical to the
     pre-structured-result verifier — only the failure channel changed.
+
+    Fixed verification order (auditable contract, see
+    docs/python-dpop-profile.md §3): parse → header structure
+    (typ/alg/jwk) → signature → htm/htu → iat window → jti presence
+    → nonce → ath → check_and_record (commit point) → return.
+    ``check_and_record`` is the LAST possibly-failing step: after it
+    returns True there is no fallible path before ``valid=True``, so
+    "jti consumed" ⇔ "proof accepted". A proof that fails any
+    earlier check never consumes its ``jti``.
     """
     try:
         head_b64, payload_b64, sig_b64 = proof.split(".")
@@ -255,6 +280,19 @@ def _verify_or_raise(
     jti = claims.get("jti")
     if not jti:
         raise DPoPError("missing jti", VerificationFailure.MISSING_JTI)
+    if expected_nonce is not None and claims.get("nonce") != expected_nonce:
+        raise DPoPError("nonce mismatch", VerificationFailure.NONCE_MISMATCH)
+    if access_token is not None:
+        expected_ath = b64u_encode(hashlib.sha256(access_token.encode("utf-8")).digest())
+        ath = claims.get("ath")
+        if not isinstance(ath, str) or not hmac.compare_digest(ath, expected_ath):
+            raise DPoPError("ath mismatch", VerificationFailure.ATH_MISMATCH)
+
+    # Commit point (LAST possibly-failing step): the jti is consumed
+    # only now that every other check has passed. A proof that failed
+    # above never burns its jti, so the legitimate holder can retry
+    # with the same jti — and an attacker who tampers with ath on an
+    # intercepted proof cannot deny the real client its jti.
     store = replay_store if replay_store is not None else jti_store
     if store is not None:
         if hasattr(store, "check_and_record"):
@@ -263,18 +301,14 @@ def _verify_or_raise(
                     "replayed jti", VerificationFailure.REPLAY_DETECTED
                 )
         else:  # duck-typed legacy store with seen()/add() only
+            # No atomicity contract for the legacy interface (seen()
+            # then add() cannot be one atomic step); it is kept for
+            # backward compatibility only.
             if store.seen(jti):
                 raise DPoPError(
                     "replayed jti", VerificationFailure.REPLAY_DETECTED
                 )
             store.add(jti)
-    if expected_nonce is not None and claims.get("nonce") != expected_nonce:
-        raise DPoPError("nonce mismatch", VerificationFailure.NONCE_MISMATCH)
-    if access_token is not None:
-        expected_ath = b64u_encode(hashlib.sha256(access_token.encode("utf-8")).digest())
-        ath = claims.get("ath")
-        if not isinstance(ath, str) or not hmac.compare_digest(ath, expected_ath):
-            raise DPoPError("ath mismatch", VerificationFailure.ATH_MISMATCH)
 
     return DPoPVerificationResult(
         valid=True,

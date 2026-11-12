@@ -88,6 +88,10 @@ once, automatically. Full detail for both paths: `docs/integrations.md`.
 - [x] Negative tests: tampered payload, wrong `htm`/`htu`, stale `iat`, replayed `jti`, `ath`/`nonce` mismatch, JWK substitution
 - [x] Interop against Keycloak 26.4+ (DPoP-capable) — verified against Keycloak 26.8.0, see `docs/interop-keycloak.md`
 
+## Interoperability profile
+
+`docs/python-dpop-profile.md` is the Python DPoP Interoperability Profile (pydpop-profile/1): the deployment contract for stateless and stateful servers, the fixed verification order (`jti` is consumed only at the final commit point, after signature, `htm`/`htu`, `iat`, nonce and `ath`), the RFC 8693 token-exchange boundary, and the accurate failure modes of the in-memory replay store. The security invariants are executable — `python -m pytest tests/test_invariants.py -v`. The 28-case conformance vectors live in `conformance/vectors/vectors.json` (`python conformance/run.py --vectors`, 28/28); `pydpop serve --conformance` exposes them over HTTP for other languages' interop tests.
+
 ## FAQ
 
 **I use httpx — do I have to mint proofs manually?** No: `pip install pydpop[httpx]` and use `DPoPAuth` — every request is signed, `DPoP-Nonce` retries are automatic. See `docs/integrations.md`.
