@@ -16,13 +16,26 @@ from .jwk import (
     public_jwk,
 )
 from .proof import generate_proof, select_alg
-from .verifier import DPoPError, MemoryJtiStore, verify_proof
+from .verifier import (
+    DPoPError,
+    DPoPVerificationResult,
+    MemoryJtiStore,
+    MemoryReplayStore,
+    ReplayStore,
+    VerificationFailure,
+    verify_proof,
+    verify_proof_result,
+)
 
 __all__ = [
     "COMPOSITE_ALGS",
     "CompositeKey",
     "DPoPError",
+    "DPoPVerificationResult",
     "MemoryJtiStore",
+    "MemoryReplayStore",
+    "ReplayStore",
+    "VerificationFailure",
     "composite_key_from_jwk",
     "generate_key",
     "generate_proof",
@@ -33,6 +46,7 @@ __all__ = [
     "public_jwk",
     "select_alg",
     "verify_proof",
+    "verify_proof_result",
 ]
 
 __version__ = "0.2.0"

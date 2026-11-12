@@ -4,6 +4,29 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
 
 ## [Unreleased]
 
+### Security
+
+- [security] `verify_proof()` failures now carry a machine-readable
+  reason: `DPoPError.reason` is a `VerificationFailure` enum
+  (`MALFORMED_PROOF`, `BAD_TYP`, `UNSUPPORTED_ALG`, `INVALID_JWK`,
+  `BAD_SIGNATURE`, `HTM_MISMATCH`, `HTU_MISMATCH`, `EXPIRED_IAT`,
+  `MISSING_JTI`, `REPLAY_DETECTED`, `NONCE_MISMATCH`, `ATH_MISMATCH`).
+  Accept/reject decisions are unchanged. New non-raising
+  `verify_proof_result()` returns a frozen `DPoPVerificationResult`
+  with the same reason, so a gateway can answer `NONCE_MISMATCH`
+  with 401 + a fresh nonce instead of collapsing every failure into
+  one opaque "invalid".
+- [security] `ReplayStore` protocol (`check_and_record(jti, iat) ->
+  bool`, atomic) formalizes the replay-cache contract;
+  `MemoryJtiStore` implements it (also importable as
+  `MemoryReplayStore`). The legacy `jti_store` parameter and
+  `seen()`/`add()` keep working.
+- [security] `SECURITY.md` now states an explicit threat model: what
+  pydpop defends (stolen/replayed bearer tokens, forged proofs, token
+  substitution, stale proofs, algorithm confusion) and what it does
+  not (key leakage, severe clock skew, missing TLS, issuance policy,
+  authorization, process-local replay cache).
+
 ### Changed
 
 - Composite signatures now follow draft-ietf-jose-pq-composite-sigs-05 §4.2
@@ -36,6 +59,9 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
 - `private_key_from_jwk()` / `private_jwk()`: client-side key persistence
   round-trip (save to disk, load back).
 - `SECURITY.md`: vulnerability reporting policy.
+- README and `docs/integrations.md` now lead with the two 5-minute
+  paths (FastAPI resource server, httpx client) before RFC clause
+  detail.
 
 ## [0.2.1] — 2026-10-11
 

@@ -39,6 +39,43 @@ verify_proof(proof=proof, htm="GET", htu="https://api.example.com/data",
              access_token="the-access-token")
 ```
 
+
+## Five minutes to production
+
+Two complete paths; the Quickstart above is the manual version.
+
+**Protect a FastAPI resource server** — `pip install pydpop[fastapi]`:
+
+```python
+from fastapi import Depends, FastAPI
+from pydpop.integrations.fastapi import DPoPVerifier
+
+app = FastAPI()
+verify_dpop = DPoPVerifier()  # share one instance: shared replay cache
+
+@app.get("/data")
+def read_data(bound=Depends(verify_dpop)):
+    # bound == {"jwk", "jwk_thumbprint", "claims"}; compare
+    # bound["jwk_thumbprint"] to the access token's cnf.jkt
+    ...
+```
+
+Any bad proof → 401 `WWW-Authenticate: DPoP` (fail closed).
+
+**Protect an httpx client** — `pip install pydpop[httpx]`:
+
+```python
+import httpx
+from pydpop import generate_key
+from pydpop.integrations.httpx import DPoPAuth
+
+client = httpx.Client(auth=DPoPAuth(generate_key()))
+client.post("https://auth.example.com/token", data={...})  # proof attached, nonce retried
+```
+
+Every request gets a fresh proof; `DPoP-Nonce` challenges are retried
+once, automatically. Full detail for both paths: `docs/integrations.md`.
+
 ## Scope
 
 **v0.1** — pure RFC 9449: ES256 (P-256) proof generation, full server-side verification (`typ`, `alg`, signature, `htm`/`htu`, `iat` window, `jti` replay cache, `nonce`, `ath` binding), RFC 7638 JWK thumbprints.
