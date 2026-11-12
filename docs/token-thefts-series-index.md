@@ -1,4 +1,4 @@
-# Thirty-Four Token Thefts, One Missing Control — series index
+# Thirty-Five Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -247,6 +247,19 @@ next theft a non-event.
     service being left enabled after provisioning). The forgery
     family, eighth occurrence — rotate the secret first, then make
     the token worthless without its key.
+35. [Thirty-Five Token Thefts, One Missing Control](nextscan-woocommerce-token-forgery-dpop-analysis.md)
+    — Two CRITICAL 9.8s published the same day, one forging and one
+    asking: CVE-2026-126797 (NextScan ns-admin 1.1.0–1.2.0, CWE-321
+    — a hardcoded JWT signing key lets an unauthenticated attacker
+    sign HS256 X-Access-Tokens with the public super administrator
+    role ID; no fixed version named yet) and CVE-2026-123695
+    (Security For WooCommerce through 1.0.16, CWE-269 — unrestricted
+    REST API routes let an unauthenticated user generate and retrieve
+    login tokens for any user, including administrators; no known
+    fix, PoC due 2026-12-09). The forgery family's ninth occurrence,
+    and its mirror image — with the binding caveat that a
+    token-generation endpoint must bind to the account owner's key,
+    not the caller's.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
