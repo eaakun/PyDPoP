@@ -2,6 +2,19 @@
 
 `pip install pydpop[httpx]` — DPoP stops being a per-request chore.
 
+## Two 5-minute paths
+
+- **Server: protect a FastAPI resource server** —
+  [`DPoPVerifier`](#fastapi-dpopverifier): one Dependency, 401s fail
+  closed, replay cache shared.
+- **Client: protect an httpx client** —
+  [`DPoPAuth`](#httpx-dpopauth): one `auth=` argument, every request
+  signed, nonce retries automatic.
+
+Both are thin adapters over `generate_proof` / `verify_proof` — the
+core stays a single dependency (`cryptography`); each integration is
+opt-in. The rest of this file is the full detail.
+
 ## httpx: `DPoPAuth`
 
 ```python

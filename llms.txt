@@ -18,6 +18,9 @@
 - Server side: `verify_proof(proof=..., htm=..., htu=..., jti_store=...)`
   verifies `typ`/`alg`/signature/`htm`/`htu`/`iat` window/`jti` replay
   (plug in Redis via `MemoryJtiStore` interface), `nonce`, `ath`.
+  `verify_proof_result()` returns the same verdict as a structured
+  `DPoPVerificationResult` with a `VerificationFailure` reason instead
+  of raising.
 - `jwk_thumbprint(jwk)` → RFC 7638 thumbprint for `cnf.jkt` token binding.
 
 ## Signature algorithms
