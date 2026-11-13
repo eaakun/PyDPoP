@@ -1,4 +1,4 @@
-# Thirty-Five Token Thefts, One Missing Control — series index
+# Thirty-Six Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
