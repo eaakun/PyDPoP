@@ -260,6 +260,14 @@ next theft a non-event.
     and its mirror image — with the binding caveat that a
     token-generation endpoint must bind to the account owner's key,
     not the caller's.
+36. [Thirty-Six Token Thefts, One Missing Control](mongodb-node-driver-oidc-token-disclosure-dpop-analysis.md)
+    — CVE-2026-126835: the MongoDB Node.js driver 6.7.0–7.8.x did
+    not consistently enforce its permitted-host restriction during
+    OIDC authentication, so a bearer token from the embedding
+    application's own login callback could be sent to a host
+    outside the allowlisted set (MEDIUM 6.5, CWE-923, fixed in
+    7.9.0). The misdelivery family's fifth outing — the connection
+    string is becoming the new redirect URI.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
