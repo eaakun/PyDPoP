@@ -2,13 +2,13 @@
 import pytest
 
 starlette = pytest.importorskip("starlette")
-from starlette.applications import Starlette  # noqa: E402
-from starlette.responses import JSONResponse  # noqa: E402
-from starlette.routing import Route  # noqa: E402
-from starlette.testclient import TestClient  # noqa: E402
+from starlette.applications import Starlette
+from starlette.responses import JSONResponse
+from starlette.routing import Route
+from starlette.testclient import TestClient
 
-from pydpop import generate_key, generate_proof  # noqa: E402
-from pydpop.integrations.starlette import DPoPMiddleware  # noqa: E402
+from pydpop import generate_key, generate_proof
+from pydpop.integrations.starlette import DPoPMiddleware
 
 
 async def data(request):

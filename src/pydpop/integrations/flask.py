@@ -56,7 +56,7 @@ class DPoPVerifier:
 
     def __init__(
         self,
-        app: "Optional[Flask]" = None,
+        app: Optional[Flask] = None,
         *,
         jti_store: Optional[MemoryJtiStore] = None,
         clock_skew: int = 60,
@@ -70,7 +70,7 @@ class DPoPVerifier:
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app: "Flask") -> None:
+    def init_app(self, app: Flask) -> None:
         app.before_request(self._check)
 
     def _unauthorized(self, detail: str):

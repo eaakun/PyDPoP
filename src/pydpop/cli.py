@@ -12,7 +12,13 @@ import argparse
 import json
 import sys
 
-from .jwk import generate_key, jwk_thumbprint, private_jwk, private_key_from_jwk, public_jwk
+from .jwk import (
+    generate_key,
+    jwk_thumbprint,
+    private_jwk,
+    private_key_from_jwk,
+    public_jwk,
+)
 from .proof import generate_proof
 from .verifier import DPoPError, verify_proof
 

@@ -21,7 +21,12 @@ from pydpop import (
     select_alg,
     verify_proof,
 )
-from pydpop.composite import composite_public_raw, composite_sign, composite_verify, mldsa_available
+from pydpop.composite import (
+    composite_public_raw,
+    composite_sign,
+    composite_verify,
+    mldsa_available,
+)
 
 HTM = "POST"
 HTU = "https://server.example.com/token"

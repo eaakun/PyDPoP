@@ -91,9 +91,8 @@ def select_alg(server_metadata: dict, *, prefer_pqc: bool = True, require_pqc: b
 
     Pass the result to :func:`pydpop.generate_key` ``(alg=...)``.
     """
-    from .verifier import DPoPError
-
     from .composite import COMPOSITE_ALGS, mldsa_available
+    from .verifier import DPoPError
 
     advertised = server_metadata.get("dpop_signing_alg_values_supported") or ["ES256"]
     if prefer_pqc and mldsa_available():

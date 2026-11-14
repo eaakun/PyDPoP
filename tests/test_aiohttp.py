@@ -2,11 +2,11 @@
 import pytest
 
 aiohttp = pytest.importorskip("aiohttp")
-from aiohttp import web  # noqa: E402
-from aiohttp.test_utils import TestClient, TestServer  # noqa: E402
+from aiohttp import web
+from aiohttp.test_utils import TestClient, TestServer
 
-from pydpop import generate_key, verify_proof  # noqa: E402
-from pydpop.integrations.aiohttp import DPoPClientSession  # noqa: E402
+from pydpop import generate_key, verify_proof
+from pydpop.integrations.aiohttp import DPoPClientSession
 
 pytestmark = pytest.mark.asyncio
 

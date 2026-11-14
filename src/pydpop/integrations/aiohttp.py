@@ -33,7 +33,7 @@ from ..jwk import public_jwk
 from ..proof import generate_proof
 
 
-def _is_nonce_challenge(resp: "aiohttp.ClientResponse") -> bool:
+def _is_nonce_challenge(resp: aiohttp.ClientResponse) -> bool:
     if resp.status not in (400, 401):
         return False
     www_auth = resp.headers.get("WWW-Authenticate", "")

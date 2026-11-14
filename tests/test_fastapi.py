@@ -2,11 +2,11 @@
 import pytest
 
 fastapi = pytest.importorskip("fastapi")
-from fastapi import Depends, FastAPI  # noqa: E402
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi import Depends, FastAPI
+from fastapi.testclient import TestClient
 
-from pydpop import generate_key, generate_proof  # noqa: E402
-from pydpop.integrations.fastapi import DPoPVerifier  # noqa: E402
+from pydpop import generate_key, generate_proof
+from pydpop.integrations.fastapi import DPoPVerifier
 
 
 def _app(**kw):
