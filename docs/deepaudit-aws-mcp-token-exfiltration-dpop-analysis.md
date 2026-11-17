@@ -87,7 +87,7 @@ key is a string the resource server will not honour, however
 perfectly it was delivered. The AWS case is the purest
 demonstration of the series' MCP thesis: the prompt injection is
 the new phishing email, and the token is what the injected
-instruction walks out with — the sixth misdelivery outing, and
+instruction walks out with — the seventh misdelivery outing, and
 the first to arrive through a prompt rather than a connection
 string or a redirect.
 
