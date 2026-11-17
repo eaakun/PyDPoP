@@ -1,4 +1,4 @@
-# Thirty-Six Token Thefts, One Missing Control — series index
+# Thirty-Nine Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -55,7 +55,7 @@ next theft a non-event.
 
 
 12. [Twelve Token Thefts, One Missing Control](vanus-default-admin-token-dpop-analysis.md)
-    — CVE-2026-111998: Vanus 0.8.0–0.9.0 ships a hardcoded default admin Bearer <redacted>;
+    — CVE-2026-111998: Vanus 0.8.0–0.9.0 ships a hardcoded default admin Bearer token;
     unauthenticated remote attackers replay the public string to the gateway gRPC
     proxy port for cluster-admin (CRITICAL 9.3/9.8, CWE-1392). The purest specimen
     of the series thesis — no theft needed, the token is public source; DPoP-bound
@@ -268,6 +268,36 @@ next theft a non-event.
     outside the allowlisted set (MEDIUM 6.5, CWE-923, fixed in
     7.9.0). The misdelivery family's fifth outing — the connection
     string is becoming the new redirect URI.
+37. [Thirty-Seven Token Thefts, One Missing Control](nodepress-tensei-hardcoded-jwt-forgery-dpop-analysis.md)
+    — Two CRITICAL 9.8 hardcoded-JWT-secret forgeries published the
+    same day: CVE-2026-129952 (NodePress through 8.5.1 — the
+    `'nodepress-secret'` fallback key lets an unauthenticated
+    attacker sign HS256 admin bearer tokens) and CVE-2026-129552
+    (Tensei through 0.11.5 — `@tensei/auth` falls back to
+    `'auth-secret-key'` when `JWT_SECRET` is unset, so tokens with
+    arbitrary user IDs are signable; no fixed version named for
+    either). The forgery family's tenth occurrence.
+38. [Thirty-Eight Token Thefts, One Missing Control](deepaudit-aws-mcp-token-exfiltration-dpop-analysis.md)
+    — Three tokens that walked out the door, published the same
+    day: CVE-2026-129877 (DeepAudit 2.0.0-beta.1–3.8.0, HIGH 7.5 —
+    an unauthenticated `GET /api/v1/config/defaults` returns the
+    operator's LLM keys and GitHub/GitLab tokens) and
+    CVE-2026-129880 (DeepAudit 2.0.0-beta.5–3.8.0, HIGH 7.7 — SSRF
+    via `repository_url` delivers the server-wide GitLab/Gitea
+    token to an attacker host), plus CVE-2026-126681 (AWS Labs
+    Timestream for InfluxDB MCP Server before 0.0.19, MEDIUM 5.5 —
+    prompt injection sends the configured InfluxDB API token to a
+    crafted endpoint; fixed in 0.0.19, rotate tokens). The
+    misdelivery family's sixth and seventh outings — and the first
+    to arrive through a prompt.
+39. [Thirty-Nine Token Thefts, One Missing Control](shiro-session-fixation-dpop-analysis.md)
+    — CVE-2026-74762: Apache Shiro through 3.0.0 never rotates the
+    session when a subject is restored from a "Remember me" cookie,
+    and accepts session IDs from the request URL even with URL
+    rewriting disabled (MEDIUM 5.9, CWE-384, fixed in 3.0.1) — the
+    oldest trick in the series' book, in the framework that guards
+    half of Java. One of seventeen Apache flaws published
+    2026-11-13/14; the 9.1 LDAP headliner stays out as issuance-class.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
