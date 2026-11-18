@@ -1,4 +1,4 @@
-# Thirty-Nine Token Thefts, One Missing Control — series index
+# Forty-Two Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -298,6 +298,31 @@ next theft a non-event.
     oldest trick in the series' book, in the framework that guards
     half of Java. One of seventeen Apache flaws published
     2026-11-13/14; the 9.1 LDAP headliner stays out as issuance-class.
+40. [Forty Token Thefts, One Missing Control](bisheng-greaterwms-hardcoded-jwt-forgery-dpop-analysis.md)
+    — Two forgeries published within minutes of each other:
+    CVE-2026-130840 (BISHENG before 3.0.0, CRITICAL 9.8 — a
+    hard-coded default `jwt_secret` lets an unauthenticated attacker
+    forge HS256 admin tokens; fixed in 3.0.0) and CVE-2026-130868
+    (GreaterWMS through 2.1.54, HIGH 7.4 — the `openid` token is an
+    unsalted MD5 of username and registration timestamp,
+    brute-forceable offline; no fixed version named). The forgery
+    family's eleventh occurrence — and the second time the secret
+    was never leaked at all, only never secret.
+41. [Forty-One Token Thefts, One Missing Control](flowise-mcp-server-token-disclosure-dpop-analysis.md)
+    — CVE-2026-130796: Flowise 3.1.3–3.1.4 returns the MCP server
+    bearer token in the unauthenticated public-chatflow response
+    (HIGH 8.2), and the leaked token invokes chatflows past the
+    API-key check, consuming the owner's model quota — the
+    disclosure family's MCP-native outing; no fixed version named
+    yet.
+42. [Forty-Two Token Thefts, One Missing Control](rucio-ssh-challenge-token-confusion-dpop-analysis.md)
+    — CVE-2026-100397: Rucio's token validator could not tell an
+    SSH challenge nonce from an auth token (CRITICAL 10.0), so an
+    unauthenticated attacker requested a challenge token for any
+    account and presented it as the auth token — admin included
+    (fixed in 35.9.1 / 38.6.1 / 40.4.2 / 41.1.1). The first
+    type-confusion case in the series: the string was never issued
+    as an auth token at all.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
