@@ -1,4 +1,4 @@
-# Forty-Two Token Thefts, One Missing Control — series index
+# Forty-Four Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -323,6 +323,28 @@ next theft a non-event.
     (fixed in 35.9.1 / 38.6.1 / 40.4.2 / 41.1.1). The first
     type-confusion case in the series: the string was never issued
     as an auth token at all.
+43. [Forty-Three Token Thefts, One Missing Control](obot-resource-confusion-token-theft-dpop-analysis.md)
+    — CVE-2026-130766: Obot 0.26.0–before 0.27.0 took the resource
+    identifier straight from a remote MCP server's Protected
+    Resource Metadata, letting a malicious server claim another
+    service and walk away with the victim's access token (HIGH
+    8.0, fixed in 0.27.0) — the resource-confusion shape's third
+    outing, the misdelivery family's eighth. The same-release
+    sibling CVE-2026-130764 (SSRF token-endpoint hijack) is
+    recorded in the piece as endpoint-hijack class, not
+    DPoP-shaped.
+44. [Forty-Four Token Thefts, One Missing Control](ansibleforms-openondemand-hardcoded-secret-forgery-dpop-analysis.md)
+    — Two CRITICAL forgeries published one minute apart:
+    CVE-2026-73969 (AnsibleForms before 6.2.1, 9.8 — a public
+    hard-coded fallback JWT secret mints admin tokens when
+    ACCESS_TOKEN_SECRET is unset; fixed in 6.2.1) and
+    CVE-2026-55171 (Open OnDemand before 4.1.6 / 4.2.3, 9.1 —
+    OIDCCryptoPassphrase defaults to SHA1(servername), so an
+    unauthenticated attacker derives the key and forges another
+    user's session cookie; fixed in 4.1.6 / 4.2.3 and
+    ood-ansible 4.2.1). The forgery family's twelfth
+    occurrence — and the second time the secret was never
+    leaked at all, only never secret.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
