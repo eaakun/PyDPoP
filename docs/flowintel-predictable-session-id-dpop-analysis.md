@@ -3,7 +3,7 @@
 ## The incident
 
 **FlowIntel**, before 4.1.0 — CVE-2026-133652, **HIGH 7.2**
-(CVSS 3.1), published 2026-11-20T11:18Z:
+(CVSS 4.0), published 2026-11-20T11:18Z:
 
 - The browser session identifier is a **bare numeric user
   ID**, not a credential-bound token. There is no secret in
