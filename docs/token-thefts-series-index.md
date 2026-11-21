@@ -1,4 +1,4 @@
-# Forty-Four Token Thefts, One Missing Control — series index
+# Forty-Five Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -345,6 +345,18 @@ next theft a non-event.
     ood-ansible 4.2.1). The forgery family's twelfth
     occurrence — and the second time the secret was never
     leaked at all, only never secret.
+45. [Forty-Five Token Thefts, One Missing Control](flowintel-predictable-session-id-dpop-analysis.md)
+    — CVE-2026-133652: FlowIntel before 4.1.0 used a bare
+    numeric user ID as the browser session identifier, so
+    an unauthenticated attacker presents any user's number
+    — `1` is the administrator — and is logged in as them
+    (HIGH 7.2, fixed in 4.1.0). The forgery family's
+    thirteenth occurrence, and its purest specimen: no
+    secret was leaked, derived, or guessed, because there
+    was no secret at all. The bundled lifecycle failures
+    (remember-me surviving password change, no rotation,
+    no current-password check) are recorded in the piece
+    as revocation semantics DPoP does not fix.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
