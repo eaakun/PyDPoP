@@ -392,6 +392,8 @@ def _audit_checks(args: argparse.Namespace) -> list[dict]:
               else "SLSA generator builder id")
         if args.commit:
             check("provenance_commit_matches_tag", commit_ok,
+                  f"provenance configSource sha1 == {args.commit}"
+                  if commit_ok else
                   f"no provenance configSource sha1 == {args.commit}")
         mismatches = []
         for name in artifacts:

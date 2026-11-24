@@ -2,9 +2,14 @@ name: supply-chain
 
 # Verifiable supply-chain artifacts for pydpop releases.
 #
-# STATUS: UNTESTED — this workflow has never run. It triggers on the
-# next published release; verify its output (provenance, signatures,
-# SBOM) on that release before relying on it. See docs/supply-chain.md.
+# STATUS: VERIFIED via workflow_dispatch (2026-11-24) after two
+# startup failures at the v0.2.2 release (the provenance job needed
+# contents: write; upload-assets is release-only). Dispatch verified
+# build + Sigstore signing + SBOM + SLSA provenance end to end and
+# `dpop audit-release` passes 8/10 on the artifacts (the SBOM checks
+# were the gap — the SBOM step now scans the installed distribution).
+# The release-event path differs only in upload-assets: true; it runs
+# on the next published release. See docs/supply-chain.md.
 #
 # What it does, per the project owner's 2026-11-12 ruling (the
 # DPoP-style release proof was WITHDRAWN — no custom artifact binding
@@ -44,10 +49,14 @@ jobs:
         uses: sigstore/gh-action-sigstore-python@v3.1.0
         with:
           inputs: ./dist/*.tar.gz ./dist/*.whl
+      - name: Install distribution for SBOM scan
+        run: |
+          python -m venv "${{ runner.temp }}/sbom-venv"
+          "${{ runner.temp }}/sbom-venv/bin/pip" install ./dist/*.whl
       - name: Generate CycloneDX SBOM
         uses: anchore/sbom-action@v0
         with:
-          path: ./
+          path: ${{ runner.temp }}/sbom-venv
           format: cyclonedx-json
           output-file: ./dist/sbom.cyclonedx.json
       - name: Hash subjects for provenance

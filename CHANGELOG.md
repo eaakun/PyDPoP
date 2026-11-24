@@ -18,6 +18,13 @@ All notable changes to pydpop. Format follows [Keep a Changelog](https://keepach
   shipped 0.2.1 and 0.2.2. It now matches the package version, and a
   test pins it to `pyproject.toml` so a missed bump fails CI
   instead of shipping silently.
+- Supply-chain SBOM now scans the installed distribution (its
+  runtime dependencies, incl. `cryptography` with its resolved
+  version) instead of the repository root, which only cataloged the
+  GitHub Actions — `dpop audit-release`'s SBOM checks failed on
+  that SBOM.
+- `dpop audit-release`'s `provenance_commit_matches_tag` detail no
+  longer reads as a failure when the check passes.
 
 ## [0.2.2] — 2026-11-24
 
