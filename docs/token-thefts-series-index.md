@@ -1,4 +1,4 @@
-# Forty-Five Token Thefts, One Missing Control — series index
+# Fifty-One Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -357,6 +357,63 @@ next theft a non-event.
     (remember-me surviving password change, no rotation,
     no current-password check) are recorded in the piece
     as revocation semantics DPoP does not fix.
+
+46. [Forty-Six Token Thefts, One Missing Control](xo-token-confusion-login-token-theft-dpop-analysis.md)
+    — CVE-2026-133469: Xen Orchestra before 6.9.2 / 6.10.1
+    turned `authenticationToken=j:{}` into an empty object,
+    and the token collection treated it as an unfiltered
+    lookup — returning its first token and authenticating
+    as that token's owner, then handing out reusable login
+    token IDs (CRITICAL 9.8, actively exploited in the
+    wild, fixed in 6.9.2 / 6.10.1). The second
+    type-confusion case in the series, after Rucio #100397.
+47. [Forty-Seven Token Thefts, One Missing Control](autogpt-hardcoded-secrets-token-forgery-dpop-analysis.md)
+    — Two AutoGPT Platform CVEs, one shipped default file:
+    CVE-2026-130169 (CRITICAL 10.0 — a publicly known
+    hardcoded JWT verification key in `.env.default` forges
+    tokens for any user or admin) and CVE-2026-132257
+    (HIGH 8.2 — a hardcoded Fernet key encrypts every
+    user's stored OAuth tokens, decryptable by anyone with
+    database read access), both fixed in 0.8.0. The
+    forgery family's fourteenth occurrence, and the
+    stored-token disclosure family's return.
+48. [Forty-Eight Token Thefts, One Missing Control](kerberos-agent-hardcoded-jwt-forgery-dpop-analysis.md)
+    — CVE-2026-135208: Kerberos Agent before 3.14.4 fell
+    back to the hard-coded JWT key `TOBECHANGED`, so an
+    unauthenticated attacker signs HS256 admin tokens with
+    arbitrary username and role claims (CRITICAL 9.8,
+    fixed in 3.14.4) — the forgery family's fifteenth
+    occurrence, and its most literal: the secret announces
+    itself as a to-do item.
+49. [Forty-Nine Token Thefts, One Missing Control](pomerium-mcp-token-endpoint-refresh-redemption-dpop-analysis.md)
+    — CVE-2026-135300: Pomerium 0.30.0–before 0.34.0
+    skipped client secret verification at its MCP token
+    endpoint, so an intercepted authorization code or
+    refresh token redeemed with any secret yields the
+    victim's access tokens (HIGH 7.4, fixed in 0.34.0).
+    The misdelivery family's ninth outing — and the first
+    to arrive at a token endpoint itself.
+50. [Fifty Token Thefts, One Missing Control](wingftp-predictable-session-id-dpop-analysis.md)
+    — CVE-2026-135171: Wing FTP Server before 8.2.8
+    derived session identifiers from process, time,
+    ServerID, and client IP state, and offered a validity
+    oracle to enumerate them — replay a live session and
+    you are the administrator, Lua console included
+    (HIGH 8.1, fixed in 8.2.8). The forgery family's
+    sixteenth occurrence, and the second
+    predictable-session-identifier specimen after FlowIntel.
+51. [Fifty-One Token Thefts, One Missing Control](dreamehome-idor-token-theft-dpop-analysis.md)
+    — Three DreameHome CVEs from one research batch, all
+    the same missing ownership check: CVE-2026-49964
+    (HIGH 7.1 — an Agora RTC token for another user's
+    device, joining its live-video channel), CVE-2026-49960
+    (MEDIUM 6.5 — another user's Meari camera-platform
+    session credentials, live video, microphone, and stored
+    recordings), and CVE-2026-49961 (MEDIUM 6.5 — another
+    device's MQTT status topic, including the session key
+    for encrypted video). Retrospective disclosure: the
+    cloud API was fixed 2026-10-14 and the MQTT broker
+    2026-10-26, six weeks before the CVEs published.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
