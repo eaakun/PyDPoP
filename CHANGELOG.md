@@ -2,7 +2,7 @@
 
 All notable changes to pydpop. Format follows [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
+## [0.2.2] — 2026-11-24
 
 ### Security
 
