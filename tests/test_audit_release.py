@@ -118,6 +118,64 @@ def test_audit_release_wrong_commit(release_dir):
     assert cmd_audit_release(_args(release_dir, commit="deadbeef")) == 1
 
 
+def _provenance_bundle(wheel_sha: str, commit: str = "abc123") -> dict:
+    """The shape the SLSA generator actually emits: an SLSA v0.2
+    statement inside a Sigstore bundle (DSSE envelope nested under
+    "dsseEnvelope", builder at predicate.builder)."""
+    payload = {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [{"name": "pydpop-0.2.2-py3-none-any.whl",
+                     "digest": {"sha256": wheel_sha}}],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+            "buildType": "https://github.com/slsa-framework/"
+                         "slsa-github-generator/generic@v1",
+            "builder": {"id": "https://github.com/slsa-framework/"
+                              "slsa-github-generator/.github/workflows/"
+                              "generator_generic_slsa3.yml@refs/tags/v2.1.0"},
+            "invocation": {"configSource": {
+                "uri": "git+https://github.com/eaakun/PyDPoP",
+                "digest": {"sha1": commit},
+                "entryPoint": ".github/workflows/supply-chain.yml"}},
+            "materials": [{"uri": "git+https://github.com/eaakun/PyDPoP",
+                           "digest": {"sha1": commit}}],
+        },
+    }
+    return {
+        "mediaType": "application/vnd.dev.sigstore.bundle.v0.3+json",
+        "verificationMaterial": {"certificate": {"rawBytes": "AAAA"}},
+        "dsseEnvelope": {
+            "payloadType": "application/vnd.in-toto+json",
+            "payload": base64.b64encode(
+                json.dumps(payload).encode()).decode(),
+            "signatures": [{"keyid": "", "sig": "AAAA"}],
+        },
+    }
+
+
+def test_audit_release_accepts_slsa_v02_sigstore_bundle(release_dir, capsys):
+    d = release_dir / "dist"
+    (d / "pydpop-0.2.2-py3-none-any.whl.intoto.jsonl").write_text(
+        json.dumps(_provenance_bundle(
+            hashlib.sha256(WHEEL).hexdigest())) + "\n")
+    assert cmd_audit_release(_args(release_dir)) == 0
+    out = capsys.readouterr().out
+    assert "[PASS] provenance_builder_is_slsa" in out
+    assert "[PASS] provenance_subjects_match_files" in out
+    assert "10/10 checks passed" in out
+
+
+def test_audit_release_malformed_provenance_no_contradictory_pass(
+        release_dir, capsys):
+    d = release_dir / "dist"
+    (d / "pydpop-0.2.2-py3-none-any.whl.intoto.jsonl").write_text(
+        '{"not": "an envelope"}\n')
+    assert cmd_audit_release(_args(release_dir)) == 1
+    out = capsys.readouterr().out
+    assert "[FAIL] provenance_parseable" in out
+    assert "[PASS] provenance_parseable" not in out
+
+
 def test_audit_release_missing_provenance(release_dir):
     (release_dir / "dist" / "pydpop-0.2.2-py3-none-any.whl.intoto.jsonl"
      ).unlink()

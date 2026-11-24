@@ -2,6 +2,23 @@
 
 All notable changes to pydpop. Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Fixed
+
+- `dpop audit-release` now parses the Sigstore bundle the SLSA
+  generator actually emits (DSSE envelope nested under
+  `dsseEnvelope`, not a bare envelope) and reads the builder id from
+  the SLSA v0.2 location (`predicate.builder.id`, keeping the v1
+  `runDetails` location as fallback). The tool previously failed
+  every provenance check on real generator output, and reported a
+  contradictory `provenance_parseable` PASS after a FAIL — both
+  fixed, with a regression test using the real bundle shape.
+- `pydpop.__version__` was stale at `0.2.0` while the package
+  shipped 0.2.1 and 0.2.2. It now matches the package version, and a
+  test pins it to `pyproject.toml` so a missed bump fails CI
+  instead of shipping silently.
+
 ## [0.2.2] — 2026-11-24
 
 ### Security

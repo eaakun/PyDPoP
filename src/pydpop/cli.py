@@ -354,18 +354,29 @@ def _audit_checks(args: argparse.Namespace) -> list[dict]:
           else f"{len(prov_paths)} provenance file(s)")
     subjects: dict[str, str] = {}
     builder_ok, commit_ok = False, args.commit is None
+    parse_failed = False
     for path in prov_paths:
         try:
             with open(path, encoding="utf-8") as f:
                 envelope = json.loads(f.readline())
+            # The SLSA generator emits a Sigstore bundle whose DSSE
+            # envelope is nested under "dsseEnvelope"; a bare envelope
+            # (older fixtures) carries "payload" at the top level.
+            dsse = envelope.get("dsseEnvelope", envelope)
             payload = json.loads(
-                base64.b64decode(envelope["payload"]).decode("utf-8"))
+                base64.b64decode(dsse["payload"]).decode("utf-8"))
         except Exception as exc:  # noqa: BLE001 - malformed fixture
             check("provenance_parseable", False, f"{path}: {exc}")
+            parse_failed = True
             continue
         predicate = payload.get("predicate", {})
-        builder = predicate.get("runDetails", {}).get("builder", {})
-        if "slsa" in builder.get("id", ""):
+        # SLSA v0.2 puts the builder at predicate.builder; v1 nests it
+        # under predicate.runDetails.builder. Accept either.
+        builder_id = predicate.get("builder", {}).get("id", "")
+        if not builder_id:
+            builder_id = predicate.get("runDetails", {}).get(
+                "builder", {}).get("id", "")
+        if "slsa" in builder_id:
             builder_ok = True
         config = predicate.get("invocation", {}).get("configSource", {})
         digest = config.get("digest", {})
@@ -374,7 +385,8 @@ def _audit_checks(args: argparse.Namespace) -> list[dict]:
         for subject in payload.get("subject", []):
             subjects[subject["name"]] = subject["digest"].get("sha256", "")
     if prov_paths:
-        check("provenance_parseable", True, "all provenance files parse")
+        if not parse_failed:
+            check("provenance_parseable", True, "all provenance files parse")
         check("provenance_builder_is_slsa", builder_ok,
               "builder id does not mention slsa" if not builder_ok
               else "SLSA generator builder id")
