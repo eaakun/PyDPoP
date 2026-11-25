@@ -1,4 +1,4 @@
-# Fifty-One Token Thefts, One Missing Control — series index
+# Fifty-Two Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -414,6 +414,13 @@ next theft a non-event.
     for encrypted video). Retrospective disclosure: the
     cloud API was fixed 2026-10-14 and the MQTT broker
     2026-10-26, six weeks before the CVEs published.
+52. [Fifty-Two Token Thefts, One Missing Control](redvector-hardcoded-api-token-dpop-analysis.md)
+    — CVE-2026-136168: RedVector before 8.1.0 ships the hard-coded default
+    bearer token `redvector-dev-token`; unauthenticated attackers replay the
+    public string to `/api/python/execute` for remote code execution as the
+    server user — and permissive CORS lets a malicious web page drive a
+    loopback instance the same way (HIGH 8.8, CWE-1392, fixed in 8.1.0).
+    The Vanus #12 shape, with a nastier delivery channel.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
