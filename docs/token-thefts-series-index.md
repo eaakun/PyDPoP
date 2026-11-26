@@ -1,4 +1,4 @@
-# Fifty-Two Token Thefts, One Missing Control — series index
+# Fifty-Eight Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -421,6 +421,51 @@ next theft a non-event.
     server user — and permissive CORS lets a malicious web page drive a
     loopback instance the same way (HIGH 8.8, CWE-1392, fixed in 8.1.0).
     The Vanus #12 shape, with a nastier delivery channel.
+53. [Fifty-Three Token Thefts, One Missing Control](webmin-cleartext-session-id-dpop-analysis.md)
+    — CVE-2026-134647: Webmin through 2.670 sends cluster RPC traffic
+    over raw TCP despite SSL configuration, so a network-positioned
+    attacker reads the session ID — and the `remote_eval` payloads
+    riding with it — or alters calls to execute code as root on managed
+    servers (HIGH 7.5, fixed by commits `63666bd6` / `aca80423`). The
+    cleartext-theft family's fourth outing.
+54. [Fifty-Four Token Thefts, One Missing Control](jspwiki-session-fixation-dpop-analysis.md)
+    — CVE-2026-78114: Apache JSPWiki 2.10–3.0.0 never replaced the
+    session identifier on login, so an attacker who set a known session
+    ID in a victim's browser kept it after the victim logged in
+    (CRITICAL 10.0, CWE-384, fixed in 3.0.1 / 2.12.6). Session
+    fixation, second outing after Shiro #39.
+55. [Fifty-Five Token Thefts, One Missing Control](openimis-jwt-signing-key-disclosure-dpop-analysis.md)
+    — Two openIMIS CVEs, one flaw class: CVE-2026-82491 and
+    CVE-2026-82492 (HIGH 8.8 ×2) let an authenticated user with a
+    single ordinary read right traverse dotted relation paths to
+    another user's JWT signing key (`user_created.i_user.private_key`)
+    and forge valid sessions for any account, administrators included
+    — surviving password reset, with no failed-login event (fixed in
+    Release 2026-10). The forgery family's seventeenth occurrence.
+56. [Fifty-Six Token Thefts, One Missing Control](gitlab-session-cookie-disclosure-dpop-analysis.md)
+    — CVE-2026-119452: GitLab CE/EE 13.7.0–19.4.11 / 19.5.9 / 19.6.2
+    let a Maintainer obtain another user's authenticated session cookie
+    through improper session storage in the dependency proxy
+    authentication flow (MEDIUM 6.7, fixed in 19.4.11 / 19.5.9 /
+    19.6.2). The session-cookie replay shape, in its most ordinary
+    clothes — an insider flaw, but a stolen cookie is still an
+    account.
+57. [Fifty-Seven Token Thefts, One Missing Control](equinox-hardcoded-jwt-secret-dpop-analysis.md)
+    — CVE-2026-136733: EduardoPires/EquinoxProject ships its JWT
+    signing key (`fmFGn5agHZkuG2N0e1zaEJIQtGVoNN5P`) in
+    `appsettings.Development.json` — and Staging and Testing — with no
+    startup warning, so anyone who reads the repo forges any user's
+    JWT (HIGH 7.3, CWE-259). Retrospective disclosure: issue #219 was
+    filed 2026-06-16, still unanswered, and the secret is still in
+    the repository. The forgery family's eighteenth occurrence.
+58. [Fifty-Eight Token Thefts, One Missing Control](teracom-predictable-session-cookie-dpop-analysis.md)
+    — CVE-2026-137086: Teracom TCW122B-CM firmware before 4.07 derives
+    its 32-bit session cookie from a tick counter, so an unauthenticated
+    remote attacker predicts or brute-forces it from uptime and login
+    timing and hijacks administrator sessions (HIGH 8.1, fixed in
+    4.07). The forgery family's nineteenth occurrence, and its third
+    predictable-session-identifier specimen after FlowIntel #45 and
+    Wing FTP #50.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
