@@ -1,4 +1,4 @@
-# Fifty-Eight Token Thefts, One Missing Control — series index
+# Sixty-Three Token Thefts, One Missing Control — series index
 
 Bearer tokens are strings; strings can be copied. This running series documents real,
 independently-verified token-theft and token-forgery incidents in the OAuth / MCP /
@@ -466,6 +466,42 @@ next theft a non-event.
     4.07). The forgery family's nineteenth occurrence, and its third
     predictable-session-identifier specimen after FlowIntel #45 and
     Wing FTP #50.
+59. [Fifty-Nine Token Thefts, One Missing Control](gogs-session-fixation-dpop-analysis.md)
+    — CVE-2026-52803: Gogs never regenerates the session ID after
+    login, so an attacker who forces a victim to use a known session
+    ID hijacks the account the moment the victim authenticates (HIGH
+    7.6, CWE-384, fixed in 0.15.0). Session fixation, third outing
+    after Shiro #39 and JSPWiki #54.
+60. [Sixty Token Thefts, One Missing Control](seppmail-hardcoded-fallback-secret-dpop-analysis.md)
+    — CVE-2026-124843: SEPPmail Secure Email Gateway before 15.1.2
+    falls back to a source-visible hard-coded secret for legacy GINA
+    token cryptography whenever appliance key material cannot load,
+    so a remote attacker forges accepted account tokens — and
+    decrypts Large File Transfer content — with no credential at all
+    (CRITICAL 9.2, CWE-321, fixed in 15.1.2). The forgery family's
+    twentieth occurrence.
+61. [Sixty-One Token Thefts, One Missing Control](nanobot-codex-oauth-token-interception-dpop-analysis.md)
+    — CVE-2026-137463: nanobot's OpenAI Codex provider retried
+    authenticated requests without TLS certificate or hostname
+    verification, so a network attacker could impersonate the
+    endpoint and steal the ChatGPT OAuth bearer token (HIGH 7.4,
+    fixed in 0.4.1). The misdelivery family's tenth outing, closest
+    kin to agentjido #18.
+62. [Sixty-Two Token Thefts, One Missing Control](budibase-invite-code-theft-dpop-analysis.md)
+    — CVE-2026-137500: Budibase lets any non-admin Creator read
+    every pending invite's secret bearer code — email and roles up
+    to `admin.global` included — and the public accept endpoint
+    mints the invited identity with an attacker-chosen password and
+    no proof-of-email (HIGH 7.2, fixed in 4.0.0). The
+    stolen-bearer family's first invite-code specimen.
+63. [Sixty-Three Token Thefts, One Missing Control](coder-session-token-leak-dpop-analysis.md)
+    — CVE-2026-137546: Coder's `coder open app` substituted the
+    user's real session token into template-defined external app
+    URLs without checking scheme or destination, so a template
+    author could collect any opener's session token — shared users
+    and helping admins included — and act as them until expiry
+    (MEDIUM 6.1, fixed in 2.39.1 and four support lines). The
+    stolen-session-token replay shape, previously #5, #7, #10, #56.
 
 Written in the "雪中送炭" spirit: expert analysis first, the library second. If this
 month sent you rotating secrets, the control that makes the next theft a non-event is
